@@ -46,3 +46,4 @@ function recibirMensaje(datosServidor)
 {
 	$("#lmensajes").append("<li>" + datosServidor["0"] + ": " + datosServidor["1"] + "</li>");
 }
+
