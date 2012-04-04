@@ -55,7 +55,6 @@ ul{
 	border-radius: 1em;
 	padding: 5px;
 	height: 400px;
-<<<<<<< HEAD
 	width: 150px;
 	float: left;
 }
@@ -63,10 +62,3 @@ ul{
 #user_text{
 	border-radius: 1px;
 }
-=======
-	list-style: none;
-	overflow-y: scroll;
-}
-
-
->>>>>>> a7e8960a2f1c720fc7a191da500098b7298c4488
