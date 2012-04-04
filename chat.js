@@ -44,5 +44,5 @@ function enviarMensaje(e)
 }
 function recibirMensaje(datosServidor)
 {
-	$("#lmensajes").append("<li>" + datosServidor["0"] + ": " + datosServidor["1"] + "</li>");  dsfds   
+	$("#lmensajes").append("<li>" + datosServidor["0"] + ": " + datosServidor["1"] + "</li>");
 }
