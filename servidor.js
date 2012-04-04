@@ -2,8 +2,6 @@
 var cvanderito = require("socket.io").listen(6969);
 var lusuarios=[];
 
-
-
 cvanderito.sockets.on("connection", arranque);
 /* ------------------------------------------------------------------------*/
 function cargaruser(data)
@@ -16,7 +14,7 @@ function cargaruser(data)
 }
 /* ------------------------------------------------------------------------*/
 function arranque(usuario)
-{	usuario.on("nuevoNombre", emitir);
+{	usuario.on("nuevoTexto", emitir);
 	usuario.on("nuevoUsuario",cargaruser);
 }
 /* ------------------------------------------------------------------------*/

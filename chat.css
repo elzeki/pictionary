@@ -8,39 +8,57 @@ body{
 form
 {
 	background: #CCC;
-	border-radius: 1em;
-	box-shadow: 0px 5px 5px rgba(0,0,0,0.5);
-	text-shadow: 5px 5px 5px rgba(0,0,0,0.5);
 	margin: 1em auto;
 	padding: 1em;
 	width: 460px;
 }
 form input
 {
-	display: block;
 	font-size: 16px;
-	margin: 1em auto;
-	padding: 0.5em;
 	width: 400px;
 }
 ul{
   	background: #EEE;
-	border-radius: 1em;
-}
-
-
-#left_chat{
-	width: 45%;
-	float: left;
-}
-
-#right_chat{
-	width: 45%;
-	float: left;
-}
-
-#lmensajes{
-	height: 400px;
 	list-style: none;
+}
+
+#formulario{
+	position:bottom;
+	display:-moz-box;
+	width: 460px;
+	margin-top: -5px;
+	padding: 0px;
+}
+
+#chat_completo{
+	border-radius: 1em;
+	background: #CCC;
+	width: 500px;
+	float: left;
+	padding-left: 10px;
+}
+
+
+#chat{
+	border-radius: 1em;
+	width: 315px;
+  	background: #EEE;
+	height: 400px;
 	overflow-y: scroll;
+	float: left;
+	margin-top: 16px;
+	margin-left: 5px;
+	padding: 5px;
+}
+
+#lusuarios{
+	border-radius: 1em;
+	padding: 5px;
+	height: 400px;
+	width: 150px;
+	float: left;
+}
+
+#user_text{
+	border-radius: 1px;
 }

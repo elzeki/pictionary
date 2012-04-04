@@ -1,12 +1,19 @@
+
 var websocket = io.connect("http://localhost:6969");
+var user;
 
 $(document).on("ready", iniciar);
 function iniciar()
 {
+	$("#formulario").hide();
+	$("#chat").hide();
+	$("#lusuarios").hide();
+	$("#tmensajes").hide();
+
+	websocket.on("listarnuevousuario", mostrarusuarios);
 	websocket.on("nombreDesdeServidor", recibirMensaje);
 	$("#formulario").on("submit",enviarMensaje);
 	$("#login").on("submit",cargarusuario);
-	websocket.on("listarnuevousuario", mostrarusuarios);
 }
 
 function mostrarusuarios(users_server)
@@ -14,35 +21,39 @@ function mostrarusuarios(users_server)
 	
 	$("#lusuarios li").remove();
 	listausuarios= $("#lusuarios");
-	listausuarios.append("<li>" + "Lista de Usuarios" + "</li>");
+	listausuarios.append("<li>" + "Usuarios" + "</li>");
 	for (var i = users_server.length - 1; i >= 0; i--) {
 	  listausuarios.append("<li>" + users_server[i]["0"]  + "</li>");
 	};
-
-
 
 	//$("#lusuarios").append("<li>" + lusuarios + "</li>");
 }
 
 function cargarusuario(e)
 {
-   var nombreusuario= $("#user_name");
-   e.preventDefault();
-	websocket.emit("nuevoUsuario", nombreusuario.val());
-	nombreusuario.val("");
+   	user = $("#user_name").val();
+	$("#user_name_label").text(user + ":");
+   	e.preventDefault();
+	websocket.emit("nuevoUsuario", user);
+	//nombreusuario.val("");
+	$("#login").hide();
+	$("#formulario").show();
+	$("#chat").show();
+	$("#lusuarios").show();
+	$("#tmensajes").show();
 }
 
 
 function enviarMensaje(e)
 {
-	var user_name = $("#user_name_input").val();
+	var user_name = user;
 	var user_text = $("#user_text").val();
 	var user_name_and_text = { "0" : user_name, "1" : user_text };
 	e.preventDefault();
-	websocket.emit("nuevoNombre", user_name_and_text );
+	websocket.emit("nuevoTexto", user_name_and_text );
 	$("#user_text").val("");
 }
 function recibirMensaje(datosServidor)
 {
-	$("#lmensajes").append("<li>" + datosServidor["0"] + ": " + datosServidor["1"] + "</li>");
+	$("#tmensajes").append("<tr><td>" + datosServidor["0"] + ": </td><td>" + datosServidor["1"] + "</td></tr>");
 }

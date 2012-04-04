@@ -12,28 +12,27 @@
 </head>
 <body>
 	<div>
-		<div id="left_chat">
-			<form id="user_name_form">
-				<label>pone tu nombre Glober:</label>
-				<input id="user_name_input" type="text" maxlength="16" id="nombre_usuario" placeholder=""/>
-			</form>
-			
-			<form id="formulario">
-					<label id="label_text">Escribir en chat: </label>
-					<input type="text" maxlength="100" id="user_text" placeholder="" required />
-			</form>
-			
+		<div id="chat_completo">
 			<form id="login">
 				<label>Login: </label>
-				<input id="user_name" type="text" maxlength="100" placeholder="" />
+				<input id="user_name" type="text" maxlength="20" placeholder="" />
+			</form>
+			<div id="chat_interno">
+				<ul id="lusuarios">
+					<li>Usuarios</li>
+				</ul>
+				<div id="chat">
+					<table id="tmensajes">
+					</table>
+				</div>
+			</div>
+
+			<form id="formulario">
+				<label id="user_name_label"></label>
+				<input type="text" maxlength="100" id="user_text" placeholder="" required />
 			</form>
 		</div>
-		<div id="right_chat">
-			<ul id="lmensajes">
-			<li> Lista de Mensajes</li>
-			</ul>
-			<ul id="lusuarios">
-			<li> Lista de Usuarios</li>
+		<div>
 		</div>
 	</div>
 </body>
