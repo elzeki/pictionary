@@ -1,0 +1,46 @@
+body{
+	color: #333;
+	background: #333;
+	font-family: "Helvetica", Arial;
+	font-size: 16px;
+	text-align: center;
+}
+form
+{
+	background: #CCC;
+	border-radius: 1em;
+	box-shadow: 0px 5px 5px rgba(0,0,0,0.5);
+	text-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+	margin: 1em auto;
+	padding: 1em;
+	width: 460px;
+}
+form input
+{
+	display: block;
+	font-size: 16px;
+	margin: 1em auto;
+	padding: 0.5em;
+	width: 400px;
+}
+ul{
+  	background: #EEE;
+	border-radius: 1em;
+}
+
+
+#left_chat{
+	width: 45%;
+	float: left;
+}
+
+#right_chat{
+	width: 45%;
+	float: left;
+}
+
+#lmensajes{
+	height: 400px;
+	list-style: none;
+	overflow-y: scroll;
+}

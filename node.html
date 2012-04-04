@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<title>Node.js Notificador</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
+	</script>
+<script src="http://localhost:6969/socket.io/socket.io.js"></script>
+<link rel="stylesheet" type="text/css" href="chat.css">
+<script type="text/javascript" src="chat.js"></script>
+</head>
+<body>
+	<div>
+		<div id="left_chat">
+			<form id="user_name_form">
+				<label>pone tu nombre Glober:</label>
+				<input id="user_name_input" type="text" maxlength="16" id="nombre_usuario" placeholder=""/>
+			</form>
+			
+			<form id="formulario">
+					<label id="label_text">Escribir en chat: </label>
+					<input type="text" maxlength="100" id="user_text" placeholder="" required />
+			</form>
+			
+			<form id="login">
+				<label>Login: </label>
+				<input id="user_name" type="text" maxlength="100" placeholder="" />
+			</form>
+		</div>
+		<div id="right_chat">
+			<ul id="lmensajes">
+			<li> Lista de Mensajes</li>
+			</ul>
+			<ul id="lusuarios">
+			<li> Lista de Usuarios</li>
+		</div>
+	</div>
+</body>
+</html>
