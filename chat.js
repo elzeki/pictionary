@@ -55,5 +55,11 @@ function enviarMensaje(e)
 }
 function recibirMensaje(datosServidor)
 {
+<<<<<<< HEAD
 	$("#tmensajes").append("<tr><td>" + datosServidor["0"] + ": </td><td>" + datosServidor["1"] + "</td></tr>");
 }
+=======
+	$("#lmensajes").append("<li>" + datosServidor["0"] + ": " + datosServidor["1"] + "</li>");
+}
+
+>>>>>>> a7e8960a2f1c720fc7a191da500098b7298c4488
