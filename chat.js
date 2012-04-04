@@ -1,4 +1,9 @@
 
+
+
+
+
+
 var websocket = io.connect("http://localhost:6969");
 
 $(document).on("ready", iniciar);
