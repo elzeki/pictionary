@@ -60,5 +60,13 @@ ul{
 }
 
 #user_text{
-	border-radius: 1px;
+	border-radius: 5px;
+}
+
+
+td.datacellone {
+	background-color: #CC9999; color: black;
+}
+td.datacelltwo {
+	background-color: #9999CC; color: black;
 }

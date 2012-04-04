@@ -1,14 +1,14 @@
 
 var websocket = io.connect("http://localhost:6969");
 var user;
+var color;
 
 $(document).on("ready", iniciar);
 function iniciar()
 {
+	color = true;
 	$("#formulario").hide();
-	$("#chat").hide();
-	$("#lusuarios").hide();
-	$("#tmensajes").hide();
+	$("#chat_interno").hide();
 
 	websocket.on("listarnuevousuario", mostrarusuarios);
 	websocket.on("nombreDesdeServidor", recibirMensaje);
@@ -25,8 +25,6 @@ function mostrarusuarios(users_server)
 	for (var i = users_server.length - 1; i >= 0; i--) {
 	  listausuarios.append("<li>" + users_server[i]["0"]  + "</li>");
 	};
-
-	//$("#lusuarios").append("<li>" + lusuarios + "</li>");
 }
 
 function cargarusuario(e)
@@ -35,12 +33,9 @@ function cargarusuario(e)
 	$("#user_name_label").text(user + ":");
    	e.preventDefault();
 	websocket.emit("nuevoUsuario", user);
-	//nombreusuario.val("");
 	$("#login").hide();
 	$("#formulario").show();
-	$("#chat").show();
-	$("#lusuarios").show();
-	$("#tmensajes").show();
+	$("#chat_interno").show();
 }
 
 
@@ -55,5 +50,14 @@ function enviarMensaje(e)
 }
 function recibirMensaje(datosServidor)
 {
-	$("#tmensajes").append("<tr><td>" + datosServidor["0"] + ": </td><td>" + datosServidor["1"] + "</td></tr>");
+	// style='background:#aaa' 
+	if (color){
+		$("#tmensajes").append("<tr style='background:#aaa'><td>" + datosServidor["0"] + ": </td><td>" + datosServidor["1"] + "</td></tr>");
+		color = !color;
+	}
+	else
+	{
+		$("#tmensajes").append("<tr style='background:#eee'><td>" + datosServidor["0"] + ": </td><td>" + datosServidor["1"] + "</td></tr>");
+		color = !color;
+	}
 }
