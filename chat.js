@@ -4,16 +4,19 @@ var user;
 var color;
 
 $(document).on("ready", iniciar);
+
 function iniciar()
-{
+{   
 	color = true;
 	$("#formulario").hide();
 	$("#chat_interno").hide();
 
 	websocket.on("listarnuevousuario", mostrarusuarios);
 	websocket.on("nombreDesdeServidor", recibirMensaje);
+	websocket.on("palabra", mostrarpalabra);
 	$("#formulario").on("submit",enviarMensaje);
 	$("#login").on("submit",cargarusuario);
+
 }
 
 function mostrarusuarios(users_server)
@@ -21,9 +24,9 @@ function mostrarusuarios(users_server)
 	
 	$("#lusuarios li").remove();
 	listausuarios= $("#lusuarios");
-	listausuarios.append("<li>" + "Usuarios" + "</li>");
+	listausuarios.append("<li>" + "Usuarios|Puntos" + "</li>");
 	for (var i = users_server.length - 1; i >= 0; i--) {
-	  listausuarios.append("<li>" + users_server[i]["0"]  + "</li>");
+	  listausuarios.append("<li>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
 	};
 }
 
@@ -60,4 +63,14 @@ function recibirMensaje(datosServidor)
 		$("#tmensajes").append("<tr style='background:#eee'><td>" + datosServidor["0"] + ": </td><td>" + datosServidor["1"] + "</td></tr>");
 		color = !color;
 	}
+}
+
+function mostrarpalabra(palabra)
+{
+  objpalabra = $("#palabra");
+  objpalabra.text(palabra);
+}
+function reloj()
+{
+	
 }
