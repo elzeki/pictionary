@@ -2,6 +2,7 @@
 var cvanderito = require("socket.io").listen(6969);
 var lusuarios=[];
 var diccionario=[];
+var turnousuario=0;
 var indicediccionario=0;
 var timer;
 cvanderito.sockets.on("connection", arranque);
@@ -14,13 +15,15 @@ function cargaruser(data)
 	var objeto = { "0" : user_name, "1" : point };
   lusuarios[lusuarios.length] = objeto;
   cvanderito.sockets.emit("listarnuevousuario",lusuarios);
+  emitirturno();
 }
 /* ------------------------------------------------------------------------*/
 function arranque(usuario)
 {	usuario.on("nuevoTexto", sumarpuntos);
 	usuario.on("nuevoTexto", emitir);
 	usuario.on("nuevoUsuario",cargaruser);
-    cargardiccionario();
+
+  cargardiccionario();
 	mostrarpalabra();
 }
 /* ------------------------------------------------------------------------*/
@@ -52,8 +55,10 @@ function  sumarpuntos(data)
      {  asignarpuntosusuario (nombreusuario);
         reiniciartimer();
         cambiarpalabra();
-        mostrarpalabra();
+        cambiarturno();
         seteartiempo();
+        emitirturno();
+        mostrarpalabra();
      }
      cvanderito.sockets.emit("listarnuevousuario",lusuarios);
 }
@@ -67,9 +72,29 @@ function seteartiempo()
 {
     timer=setInterval(function() {     
     cambiarpalabra();
+    cambiarturno();
+    emitirturno()
     if (indicediccionario > diccionario.length ){ indicediccionario =0;}
     mostrarpalabra(diccionario[indicediccionario]);
   },11500);}
+/*------------------------------------------------------------------------------- */
+function cambiarturno()
+{ var auxtope=lusuarios.length;
+  ++turnousuario;
+  if ((turnousuario + 1) > auxtope) 
+  {
+   turnousuario =0;
+  }
+}
+/*------------------------------------------------------------------------------- */
+function emitirturno()
+{  if (lusuarios.length > 0)
+   {
+   console.log("estoy emitiendoooooooooooooooooooooooooooooooooooooooooooooooooo");
+   console.log(lusuarios[turnousuario][0]);
+   cvanderito.sockets.emit("turnousuario",lusuarios[turnousuario][0]);
+   }
+}
 /*------------------------------------------------------------------------------- */
 function cambiarpalabra()
 {
