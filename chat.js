@@ -14,6 +14,7 @@ function iniciar()
 	websocket.on("listarnuevousuario", mostrarusuarios);
 	websocket.on("nombreDesdeServidor", recibirMensaje);
 	websocket.on("palabra", mostrarpalabra);
+	websocket.on("turnousuario", setearturnousuario);
 	$("#formulario").on("submit",enviarMensaje);
 	$("#login").on("submit",cargarusuario);
 
@@ -70,7 +71,8 @@ function mostrarpalabra(palabra)
   objpalabra = $("#palabra");
   objpalabra.text(palabra);
 }
-function reloj()
+
+function setearturnousuario(usuario)
 {
-	
+    alert(usuario);
 }
