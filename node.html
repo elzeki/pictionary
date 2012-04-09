@@ -6,7 +6,6 @@
 	<title>Node.js Notificador</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="http://localhost:6969/socket.io/socket.io.js"></script>
-<script src="ga.js" type="text/javascript"></script>
 <script type="text/javascript" src="modernizr-1.js"></script>
 <script type="text/javascript" src="chat.js"></script>
 <link rel="stylesheet" type="text/css" href="chat.css">
@@ -37,10 +36,10 @@
 	</div>
 	<div id="pizarra_completa"> 
 		<div style="display: none;" id="no_html5">
-    		<img src="pizarra_files/no_html5.png" alt="Tu navegador no soporta HTML5" title="HTML5 support">
+    		<img src="no_html5.png" alt="Tu navegador no soporta HTML5" title="HTML5 support">
 	    </div>
 	    <div id="contenedor_pizarra" class="main_container">
-			<canvas id="pizarra" ></canvas>
+			<canvas id="pizarra"></canvas>
 			<div id="colorsDiv" class="colors_container">
 				<div id="buttonRed"  class="red_button"></div><br>
 				<div id="buttonBlue"  class="blue_button"></div><br>
