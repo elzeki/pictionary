@@ -6,7 +6,7 @@ var indicediccionario=0;
 var timer;
 cvanderito.sockets.on("connection", arranque);
 seteartiempo();
-/* ------------------------------------------------------------------------*/
+/* ------------------------------------------------------------------------*/ 
 function cargaruser(data)
 {  
   var user_name=data;

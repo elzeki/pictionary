@@ -49,7 +49,7 @@ function mostrarusuarios(users_server)
 	};
 }
 
-function cargarusuario(e)
+function cargarusuario(e) 
 {
    	user = $("#user_name").val();
 	$("#user_name_label").text(user + ":");
