@@ -56,12 +56,12 @@ function recibirMensaje(datosServidor)
 {
 	// style='background:#aaa' 
 	if (color){
-		$("#tmensajes").append("<tr style='background:#aaa'><td>" + datosServidor["0"] + ": </td><td>" + datosServidor["1"] + "</td></tr>");
+		$("#tmensajes").append("<tr style='background:#aaa'><td style='width:100px'>" + datosServidor["0"] + ": </td><td style='width:200px'>" + datosServidor["1"] + "</td></tr>");
 		color = !color;
 	}
 	else
 	{
-		$("#tmensajes").append("<tr style='background:#eee'><td>" + datosServidor["0"] + ": </td><td>" + datosServidor["1"] + "</td></tr>");
+		$("#tmensajes").append("<tr style='background:#eee'><td style='width:100px'>" + datosServidor["0"] + ": </td><td style='width:200px'>" + datosServidor["1"] + "</td></tr>");
 		color = !color;
 	}
 }
