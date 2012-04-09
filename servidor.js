@@ -7,7 +7,7 @@ var indicediccionario=0;
 var timer;
 cvanderito.sockets.on("connection", arranque);
 seteartiempo();
-/* ------------------------------------------------------------------------*/
+/* ------------------------------------------------------------------------*/ 
 function cargaruser(data)
 {  
   var user_name=data;
@@ -90,8 +90,6 @@ function cambiarturno()
 function emitirturno()
 {  if (lusuarios.length > 0)
    {
-   console.log("estoy emitiendoooooooooooooooooooooooooooooooooooooooooooooooooo");
-   console.log(lusuarios[turnousuario][0]);
    cvanderito.sockets.emit("turnousuario",lusuarios[turnousuario][0]);
    }
 }

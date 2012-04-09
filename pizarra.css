@@ -1,0 +1,41 @@
+#pizarra { 
+	border:1px solid;
+	border-color:#EEEEEE;
+	float:left;
+	background-color:#fff;
+}
+
+#borrar_bt{
+	text-decoration:none;
+	color:#000;
+	font-weight:bold; 
+}
+.main_container{
+	float:none;
+}
+
+.main_container .colors_container{
+	border:3px solid;
+	border-color:#DDDDDD;
+	float:left;
+}
+.main_container .colors_container .red_button{
+	width:20px;
+	height:20px;
+	background-color:#FF0000;
+	float:left;
+}
+
+.main_container .colors_container .blue_button{
+	width:20px;
+	height:20px;
+	background-color:#0000ff;
+	float:left;
+}
+
+.main_container .colors_container .black_button{
+	width:20px;
+	height:20px;
+	background-color:#000000;
+	float:left;
+}
