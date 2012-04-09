@@ -1,4 +1,3 @@
-
 var websocket = io.connect("http://localhost:6969");
 var user;
 var color_linea_chat;
@@ -18,6 +17,7 @@ function iniciar()
 	websocket.on("listarnuevousuario", mostrarusuarios);
 	websocket.on("nombreDesdeServidor", recibirMensaje);
 	websocket.on("palabra", mostrarpalabra);
+	websocket.on("turnousuario", setearturnousuario);
 	$("#formulario").on("submit",enviarMensaje);
 	$("#login").on("submit",cargarusuario);
 
@@ -136,4 +136,9 @@ function pintar(e) {
 
 function borrar(){
 	pizarra_canvas.width = pizarra_canvas.width;
+}
+
+function setearturnousuario(usuario)
+{
+   $("#turno_usuario").text(usuario);
 }
