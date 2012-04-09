@@ -74,5 +74,5 @@ function mostrarpalabra(palabra)
 
 function setearturnousuario(usuario)
 {
-    $("#turno_usuario").text(usuario);
+   $("#turno_usuario").text(usuario);
 }
