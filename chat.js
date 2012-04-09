@@ -71,3 +71,8 @@ function mostrarpalabra(palabra)
   objpalabra = $("#palabra");
   objpalabra.text(palabra);
 }
+
+function setearturnousuario(usuario)
+{
+    $("#turno_usuario").text(usuario);
+}
