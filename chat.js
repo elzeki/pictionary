@@ -1,15 +1,13 @@
 var websocket = io.connect("http://localhost:6969");
 var user;
-var color_linea_chat;
+var color_linea_chat = true; //alterna de true a false para saber de que color pinat la linea
 var pizarra_canvas;
 var pizarra_context;
 var color_pincel;
-var se_modifico_pizarra = false;
 $(document).on("ready", iniciar);
 
 function iniciar()
-{   
-	color_linea_chat = true; //alterna de true a false para saber de que color pinat la linea
+{
 	$("#formulario").hide();
 	$("#chat_interno").hide();
 	$("#pizarra_completa").hide();
@@ -30,7 +28,7 @@ function iniciar()
 	$("#formulario").on("submit",enviarMensaje);
 	$("#login").on("submit",cargarusuario);
 
-	setInterval( function() {  enviar_canvas(); }, 1000 );
+	//setInterval( function() {  enviar_canvas(); }, 1000 );
 
 	if( !Modernizr.canvas ){
 		$("#contenedor_pizarra").style.display = "none";
@@ -45,6 +43,8 @@ function iniciar()
 			$("#buttonRed").mousedown(function(){ setColor( $(".red_button").css("background-color"));});
 			$("#buttonBlue").mousedown(function(){ setColor( $("#buttonBlue").css("background-color"));});
 			$("#buttonBlack").mousedown(function(){ setColor( $("#buttonBlack").css("background-color"));});
+
+	pizarra_canvas.addEventListener("mouseup",enviar_canvas,false);
 		}
 }
 
@@ -144,6 +144,7 @@ function pintar(e) {
 
 function borrar(){
 	pizarra_canvas.width = pizarra_canvas.width;
+	enviar_canvas();
 }
 
 function setearturnousuario(usuario)
@@ -156,13 +157,10 @@ function enviar_canvas()
 	if($("#turno_usuario").text() == user )
 	{ 
 		var pizarra = document.getElementById("pizarra");
-
 		var dataURL = pizarra.toDataURL();
-		if( se_modifico_pizarra )
-		{
-			websocket.emit("pizarra", dataURL );
-			se_modifico_pizarra = false;
-		}
+		websocket.emit("pizarra", dataURL );
+		se_modifico_pizarra = false;
+		
 	}
 }
 
