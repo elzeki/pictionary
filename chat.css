@@ -84,3 +84,7 @@ td.datacelltwo {
 #tmensajes tr{
 	width: 100%;
 }
+
+#turno_usuario{
+	visibility: hidden;
+}
