@@ -4,7 +4,7 @@ var color_linea_chat;
 var pizarra_canvas;
 var pizarra_context;
 var color_pincel;
-
+var se_modifico_pizarra = false;
 $(document).on("ready", iniciar);
 
 function iniciar()
@@ -105,6 +105,7 @@ function setColor(buttonColor){
 }
 
 function empezarPintar(e){
+	se_modifico_pizarra = true;
 	pizarra_context.beginPath();
 	pizarra_context.strokeStyle = color_pincel;
 	pizarra_context.moveTo(e.clientX-pizarra_canvas.offsetLeft,e.clientY-pizarra_canvas.offsetTop);
@@ -146,15 +147,24 @@ function setearturnousuario(usuario)
 
 function enviar_canvas()
 {
-	var pizarra = document.getElementById("pizarra");
-	var dataURL = pizarra.toDataURL();
-	websocket.emit("pizarra", dataURL );
+	if($("#turno_usuario").text() == user )
+	{ 
+		var pizarra = document.getElementById("pizarra");
+
+		var dataURL = pizarra.toDataURL();
+		if( se_modifico_pizarra )
+		{
+			websocket.emit("pizarra", dataURL );
+			se_modifico_pizarra = false;
+		}
+	}
 }
 
 function recibir_canvas(canvas_recibido)
 {
 	if($("#turno_usuario").text() != user )
-	{ 
+	{
+		borrar();
 		loadCanvas(canvas_recibido);
     }
 }
