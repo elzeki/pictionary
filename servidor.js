@@ -63,7 +63,7 @@ function  sumarpuntos( data )
         emitirturno();
         mostrarpalabra();
      }
-     cvanderito.sockets.emit( "listarnuevousuario", lusuarios );
+     //cvanderito.sockets.emit( "listarnuevousuario", lusuarios );
 }
 /* ------------------------------------------------------------------------*/
 function mostrarpalabra()
@@ -76,7 +76,7 @@ function seteartiempo()
     timer = setInterval( 
       function() {     
         cambiarpalabra();
-        //cambiarturno();
+        cambiarturno();
         emitirturno()
         if ( indicediccionario > diccionario.length ){ indicediccionario = 0; }
         mostrarpalabra( diccionario[ indicediccionario ] );
@@ -85,7 +85,7 @@ function seteartiempo()
 /*------------------------------------------------------------------------------- */
 function cambiarturno()
 { var auxtope = lusuarios.length;
-  //++turnousuario;
+  ++turnousuario;
   if ( ( turnousuario + 1 ) > auxtope ) 
   {
    turnousuario = 0;
@@ -95,7 +95,7 @@ function cambiarturno()
 function emitirturno()
 {  if ( lusuarios.length > 0 )
    {
-      cvanderito.sockets.emit( "turnousuario", lusuarios[ turnousuario ][ 0 ] );
+      cvanderito.sockets.emit( "turnousuario", lusuarios[ turnousuario ][ 0 ], lusuarios);
    }
 }
 /*------------------------------------------------------------------------------- */
@@ -103,6 +103,7 @@ function cambiarpalabra()
 {
   var random = Math.floor ( diccionario.length * Math.random() );
   indicediccionario = random;
+
 }
 /*------------------------------------------------------------------------------- */
 function reiniciartimer()

@@ -53,9 +53,16 @@ function mostrarusuarios(users_server)
 {
 	$("#lusuarios li").remove();
 	listausuarios= $("#lusuarios");
-	listausuarios.append("<li>" + "Usuarios|Puntos" + "</li>");
+	listausuarios.append("<li>" + "Usuarios | Puntos" + "</li>");
+
 	for (var i = users_server.length - 1; i >= 0; i--) {
-	  listausuarios.append("<li>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+	 		if (users_server[i]["0"] == $("#turno_usuario").text())
+		{
+			listausuarios.append("<li style = 'font-weight: bold; background:yellow;'>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+		}
+		else {
+	  		listausuarios.append("<li>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+	  	}
 	};
 }
 
@@ -149,15 +156,28 @@ function borrar(){
 	enviar_canvas();
 }
 
-function setearturnousuario(usuario)
+function setearturnousuario(usuario, users_server)
 {
   	var objpalabra = $("#palabra");
    $("#turno_usuario").text(usuario);
-
   	if( user == $("#turno_usuario").text() )
 	{	objpalabra.show();	}
 	else
 	{	objpalabra.hide();	}
+
+   $("#lusuarios li").remove();
+	listausuarios= $("#lusuarios");
+	listausuarios.append("<li>" + "Usuarios | Puntos" + "</li>");
+
+	for (var i = users_server.length - 1; i >= 0; i--) {
+		if (users_server[i]["0"] == $("#turno_usuario").text())
+		{
+			listausuarios.append("<li style = 'font-weight: bold; background:yellow;'>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+		}
+		else {
+	  		listausuarios.append("<li>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+	  	}	
+	};
 }
 
 function enviar_canvas()
