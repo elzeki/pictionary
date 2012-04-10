@@ -22,6 +22,7 @@ function arranque(usuario)
 {	usuario.on("nuevoTexto", sumarpuntos);
 	usuario.on("nuevoTexto", emitir);
 	usuario.on("nuevoUsuario",cargaruser);
+  usuario.on("pizarra", recibir_pizarra);
 
   cargardiccionario();
 	mostrarpalabra();
@@ -72,7 +73,7 @@ function seteartiempo()
 {
     timer=setInterval(function() {     
     cambiarpalabra();
-    cambiarturno();
+    //cambiarturno();
     emitirturno()
     if (indicediccionario > diccionario.length ){ indicediccionario =0;}
     mostrarpalabra(diccionario[indicediccionario]);
@@ -108,4 +109,9 @@ function reiniciartimer()
 function cargardiccionario()
 { 
   diccionario = ["triangulo","pera","manzana","banana","casa","auto","computadora","mesa","silla","guante","pelota","heladera","monitor","lapicera","anteojos","reloj","azucar","teclado","empresa"];
+}
+
+function recibir_pizarra(data)
+{
+  cvanderito.sockets.emit("pizarra_actualizada",data);
 }

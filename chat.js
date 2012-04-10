@@ -18,8 +18,19 @@ function iniciar()
 	websocket.on("nombreDesdeServidor", recibirMensaje);
 	websocket.on("palabra", mostrarpalabra);
 	websocket.on("turnousuario", setearturnousuario);
+	if($("#turno_usuario").val() != user )
+	{
+		websocket.on("pizarra_actualizada", recibir_canvas);
+	}
+
+	if($("#turno_usuario").val() == user )
+	{
+		websocket.on("pizarra", enviar_canvas);
+	}
 	$("#formulario").on("submit",enviarMensaje);
 	$("#login").on("submit",cargarusuario);
+
+	setInterval(function() {  enviar_canvas(); }, 1000);
 
 	if(!Modernizr.canvas){
 		$("#contenedor_pizarra").style.display = "none";
@@ -141,4 +152,33 @@ function borrar(){
 function setearturnousuario(usuario)
 {
    $("#turno_usuario").text(usuario);
+}
+
+function enviar_canvas()
+{
+	var pizarra = document.getElementById("pizarra");
+	var dataURL = pizarra.toDataURL();
+	websocket.emit("pizarra", dataURL );
+}
+
+function recibir_canvas(canvas_recibido)
+{
+	if($("#turno_usuario").val() != user )
+	{ 
+		loadCanvas(canvas_recibido);
+    }
+}
+
+
+function loadCanvas(dataURL){
+    var canvas = document.getElementById("pizarra");
+    var context = canvas.getContext("2d");
+ 
+    // load image from data url
+    var imageObj = new Image();
+    imageObj.onload = function(){
+        context.drawImage(this, 0, 0);
+    };
+ 
+    imageObj.src = dataURL;
 }
