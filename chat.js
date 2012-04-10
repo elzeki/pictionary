@@ -12,6 +12,8 @@ function iniciar()
 	$("#chat_interno").hide();
 	$("#pizarra_completa").hide();
 
+	websocket.on("begin", comenzar);
+
 	websocket.on("listarnuevousuario", mostrarusuarios);
 	websocket.on("nombreDesdeServidor", recibirMensaje);
 	websocket.on("palabra", mostrarpalabra);
@@ -32,7 +34,8 @@ function iniciar()
 
 	if( !Modernizr.canvas ){
 		$("#contenedor_pizarra").style.display = "none";
-		}else{
+    }
+    else{
 			color_pincel = "#000000";
 			document.getElementById("no_html5").style.display = "none";
 			pizarra_canvas = document.getElementById("pizarra");
@@ -40,17 +43,14 @@ function iniciar()
 			pizarra_context.strokeStyle = "#000";
 			pizarra_canvas.addEventListener("mousedown",empezarPintar,false);
 			pizarra_canvas.addEventListener("mouseup",terminarPintar,false);
-			$("#buttonRed").mousedown(function(){ setColor( $(".red_button").css("background-color"));});
-			$("#buttonBlue").mousedown(function(){ setColor( $("#buttonBlue").css("background-color"));});
-			$("#buttonBlack").mousedown(function(){ setColor( $("#buttonBlack").css("background-color"));});
 
-	pizarra_canvas.addEventListener("mouseup",enviar_canvas,false);
+			$(".botonera").mousedown(function(){ setColor( $(this).css("background-color"));});
+			pizarra_canvas.addEventListener("mouseup",enviar_canvas,false);
 		}
 }
 
 function mostrarusuarios(users_server)
 {
-	
 	$("#lusuarios li").remove();
 	listausuarios= $("#lusuarios");
 	listausuarios.append("<li>" + "Usuarios|Puntos" + "</li>");
@@ -69,6 +69,7 @@ function cargarusuario(e)
 	$("#formulario").show();
 	$("#chat_interno").show();
 	$("#pizarra_completa").show();
+
 }
 
 function enviarMensaje(e)
@@ -82,7 +83,7 @@ function enviarMensaje(e)
 }
 function recibirMensaje(datosServidor)
 {
-	// style='background:#aaa' 
+	
 	if (color_linea_chat){
 		$("#tmensajes").append("<tr style='background:#aaa'><td style='width:100px'>" + datosServidor["0"] + ": </td><td style='width:200px'>" + datosServidor["1"] + "</td></tr>");
 		color_linea_chat = !color_linea_chat;
@@ -96,12 +97,13 @@ function recibirMensaje(datosServidor)
 
 function mostrarpalabra(palabra)
 {
-  objpalabra = $("#palabra");
+  var objpalabra = $("#palabra");
   objpalabra.text(palabra);
-}
-function reloj()
-{
-	
+
+  	if( user == $("#turno_usuario").text() )
+	{	objpalabra.show();	}
+	else
+	{	objpalabra.hide();	}
 }
 
 //funciones de la pizarra
@@ -149,7 +151,13 @@ function borrar(){
 
 function setearturnousuario(usuario)
 {
+  	var objpalabra = $("#palabra");
    $("#turno_usuario").text(usuario);
+
+  	if( user == $("#turno_usuario").text() )
+	{	objpalabra.show();	}
+	else
+	{	objpalabra.hide();	}
 }
 
 function enviar_canvas()
@@ -184,4 +192,11 @@ function loadCanvas(dataURL){
     };
  
     imageObj.src = dataURL;
+}
+
+function comenzar(turno_usuario){
+	if( user == $("#turno_usuario").text() )
+	{	objpalabra.show();	}
+	else
+	{	objpalabra.hide();	}
 }
