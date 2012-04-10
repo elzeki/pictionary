@@ -42,9 +42,12 @@ function iniciar()
 			pizarra_context.strokeStyle = "#000";
 			pizarra_canvas.addEventListener("mousedown",empezarPintar,false);
 			pizarra_canvas.addEventListener("mouseup",terminarPintar,false);
-			$("#buttonRed").mousedown(function(){ setColor( $(".red_button").css("background-color"));});
-			$("#buttonBlue").mousedown(function(){ setColor( $("#buttonBlue").css("background-color"));});
-			$("#buttonBlack").mousedown(function(){ setColor( $("#buttonBlack").css("background-color"));});
+			btn_red=$("#buttonRed");
+			btn_red.mousedown(function(){ setColor( btn_red.css("background-color"));});
+			btn_blue=$("#buttonBlue");
+			btn_blue.mousedown(function(){ setColor( btn_blue.css("background-color"));});
+			btn_black=$("#buttonBlack");
+			btn_black.mousedown(function(){ setColor( btn_black.css("background-color"));});
 		}
 
 }
@@ -101,11 +104,6 @@ function mostrarpalabra(palabra)
   objpalabra = $("#palabra");
   objpalabra.text(palabra);
 }
-function reloj()
-{
-	
-}
-
 
 //funciones de la pizarra
 
