@@ -19,23 +19,18 @@
 	border-color:#DDDDDD;
 	float:left;
 }
-.main_container .colors_container .red_button{
-	width:20px;
-	height:20px;
-	background-color:#FF0000;
-	float:left;
-}
 
-.main_container .colors_container .blue_button{
+.main_container .colors_container div {
 	width:20px;
 	height:20px;
-	background-color:#0000ff;
 	float:left;
 }
-
-.main_container .colors_container .black_button{
-	width:20px;
-	height:20px;
-	background-color:#000000;
-	float:left;
-}
+.main_container .colors_container #buttonRed { background-color:#FF0000;}
+.main_container .colors_container #buttonBlue { background-color:#0000ff;}
+.main_container .colors_container #buttonBlack {	background-color:#000000;}
+.main_container .colors_container #buttonyellow{ background-color:#FFFF00;}
+.main_container .colors_container #buttonmaroon { background-color:#691F01;}
+.main_container .colors_container #buttonorange { background-color: #FF8000}
+.main_container .colors_container #buttonterreverte { background-color: #385E0F}
+.main_container .colors_container #buttonviolet { background-color: #9900CC}
+.main_container .colors_container #buttonlima { background-color: #00FF00}

@@ -34,7 +34,8 @@ function iniciar()
 
 	if(!Modernizr.canvas){
 		$("#contenedor_pizarra").style.display = "none";
-		}else{
+    }
+    else{
 			color_pincel = "#000000";
 			document.getElementById("no_html5").style.display = "none";
 			pizarra_canvas = document.getElementById("pizarra");
@@ -42,19 +43,13 @@ function iniciar()
 			pizarra_context.strokeStyle = "#000";
 			pizarra_canvas.addEventListener("mousedown",empezarPintar,false);
 			pizarra_canvas.addEventListener("mouseup",terminarPintar,false);
-			btn_red=$("#buttonRed");
-			btn_red.mousedown(function(){ setColor( btn_red.css("background-color"));});
-			btn_blue=$("#buttonBlue");
-			btn_blue.mousedown(function(){ setColor( btn_blue.css("background-color"));});
-			btn_black=$("#buttonBlack");
-			btn_black.mousedown(function(){ setColor( btn_black.css("background-color"));});
+			$(".botonera").mousedown(function(){ setColor( $(this).css("background-color"));});
 		}
 
 }
 
 function mostrarusuarios(users_server)
 {
-	
 	$("#lusuarios li").remove();
 	listausuarios= $("#lusuarios");
 	listausuarios.append("<li>" + "Usuarios|Puntos" + "</li>");
