@@ -81,7 +81,7 @@ function seteartiempo()
         if ( indicediccionario > diccionario.length ){ indicediccionario = 0; }
         mostrarpalabra( diccionario[ indicediccionario ] );
         }
-      ,11500);}
+      ,60000);}
 /*------------------------------------------------------------------------------- */
 function cambiarturno()
 { var auxtope = lusuarios.length;

@@ -90,7 +90,6 @@ function enviarMensaje(e)
 }
 function recibirMensaje(datosServidor)
 {
-	
 	if (color_linea_chat){
 		$("#tmensajes").append("<tr style='background:#aaa'><td style='width:100px'>" + datosServidor["0"] + ": </td><td style='width:200px'>" + datosServidor["1"] + "</td></tr>");
 		color_linea_chat = !color_linea_chat;
@@ -100,6 +99,8 @@ function recibirMensaje(datosServidor)
 		$("#tmensajes").append("<tr style='background:#eee'><td style='width:100px'>" + datosServidor["0"] + ": </td><td style='width:200px'>" + datosServidor["1"] + "</td></tr>");
 		color_linea_chat = !color_linea_chat;
 	}
+
+	$("#chat").scrollTop( $("#chat").clientTop() + 30 );
 }
 
 function mostrarpalabra(palabra)
@@ -178,6 +179,7 @@ function setearturnousuario(usuario, users_server)
 	  		listausuarios.append("<li>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
 	  	}	
 	};
+	borrar();
 }
 
 function enviar_canvas()
