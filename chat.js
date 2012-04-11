@@ -101,11 +101,6 @@ function recibirMensaje(datosServidor)
 	}
 
 	$("#chat").scrollTop( document.getElementById('chat').scrollHeight );
-
-	var alto = $("#chat").height();
-	var scroll = $("#chat").scrollTop();
-	var offsetlala = $("#chat").offset();
-	var chango = 0;
 }
 
 function mostrarpalabra(palabra)
