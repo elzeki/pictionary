@@ -100,7 +100,12 @@ function recibirMensaje(datosServidor)
 		color_linea_chat = !color_linea_chat;
 	}
 
-	$("#chat").scrollTop( $("#chat").clientTop() + 30 );
+	$("#chat").scrollTop( document.getElementById('chat').scrollHeight );
+
+	var alto = $("#chat").height();
+	var scroll = $("#chat").scrollTop();
+	var offsetlala = $("#chat").offset();
+	var chango = 0;
 }
 
 function mostrarpalabra(palabra)
