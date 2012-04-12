@@ -5,6 +5,7 @@ var diccionario = [];
 var turnousuario = 0;
 var indicediccionario = 0;
 var timer;
+var tiempodereloj;
 my_socket.sockets.on( "connection", arranque );
 seteartiempo();
 
@@ -17,6 +18,7 @@ function arranque( usuario )
 
   cargardiccionario();
 	mostrarpalabra();
+
 }
 /* ------------------------------------------------------------------------*/ 
 function cargaruser( data )
@@ -63,7 +65,6 @@ function  sumarpuntos( data )
         emitirturno();
         mostrarpalabra();
      }
-     //my_socket.sockets.emit( "listarnuevousuario", lusuarios );
 }
 /* ------------------------------------------------------------------------*/
 function mostrarpalabra()
@@ -72,16 +73,22 @@ function mostrarpalabra()
 }
 /*------------------------------------------------------------------------------- */
 function seteartiempo()
-{
+{   
+    
+
     timer = setInterval( 
-      function() {     
+      function() {    
+        
         cambiarpalabra();
         cambiarturno();
         emitirturno()
+        mandarpulsoreloj();
         if ( indicediccionario > diccionario.length ){ indicediccionario = 0; }
         mostrarpalabra( diccionario[ indicediccionario ] );
         }
-      ,60000);}
+      ,60000);
+  }
+    
 /*------------------------------------------------------------------------------- */
 function cambiarturno()
 { var auxtope = lusuarios.length;
@@ -114,8 +121,15 @@ function cargardiccionario()
   diccionario = [ "triangulo", "pera", "manzana", "banana", "casa", "auto", "computadora", "mesa", "silla", "guante"
                 , "pelota", "heladera", "monitor", "lapicera", "anteojos", "reloj", "azucar", "teclado", "empresa"];
 }
-
+/*------------------------------------------------------------------------------- */
 function recibir_pizarra( data )
 {
   my_socket.sockets.emit( "pizarra_actualizada", data );
+}
+/*------------------------------------------------------------------------------- */
+
+function mandarpulsoreloj()
+{  
+ my_socket.sockets.emit("seteartiemporeloj",0);
+
 }

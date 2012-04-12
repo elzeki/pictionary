@@ -4,6 +4,8 @@ var color_linea_chat = true; //alterna de true a false para saber de que color p
 var pizarra_canvas;
 var pizarra_context;
 var color_pincel;
+ var timerreloj;
+ var reloj_canvas;
 
 $(document).on("ready", iniciar);
 
@@ -23,6 +25,8 @@ function iniciar()
 		websocket.on("nombreDesdeServidor", recibirMensaje);
 		websocket.on("palabra", mostrarpalabra);
 		websocket.on("turnousuario", setearturnousuario);
+		websocket.on("seteartiemporeloj", seteartiemporeloj);
+		
 		if($("#turno_usuario").text() != user )
 		{	websocket.on("pizarra_actualizada", recibir_canvas); }
 		else
@@ -71,6 +75,7 @@ function cargarusuario(e)
 	$("#formulario").show();
 	$("#chat_interno").show();
 	$("#pizarra_completa").show();
+	seteartiemporeloj(0);  /* quit me only for test*/
 
 }
 
@@ -154,7 +159,7 @@ function pintar(e) {
 	hasta ese momento.
 */
 
-function borrar(){
+function borrar(canvas){
 	pizarra_canvas.width = pizarra_canvas.width;
 	enviar_canvas();
 }
@@ -162,7 +167,7 @@ function borrar(){
 //***************************************************************************************************
 
 function setearturnousuario(usuario, users_server)
-{
+{   
   	var objpalabra = $("#palabra");
    $("#turno_usuario").text(usuario);
   	if( user == $("#turno_usuario").text() )
@@ -218,4 +223,90 @@ function loadCanvas(dataURL){
     };
  
     imageObj.src = dataURL;
+}
+
+
+function comenzar(turno_usuario){
+	if( user == $("#turno_usuario").text() )
+	{	objpalabra.show();	}
+	else
+	{	objpalabra.hide();	}
+}
+
+function seteartiemporeloj(i)
+{
+	reloj_canvas = document.getElementById("reloj");
+	lienzo = reloj_canvas.getContext("2d");
+	reloj_canvas.width=reloj_canvas.width;
+	color="rgb(51,255,102)";
+	dibujar_reloj(lienzo,color);
+	clearInterval(timerreloj);
+	timerreloj=setInterval( 
+	  function() {    
+	    ++i;
+	     seteartiemporestante(lienzo,i);
+	    }
+	  ,1000);
+}
+
+
+function seteartiemporestante(reloj_canvas,i)
+{	
+
+	auxi=i;
+	if (i<10) {i="0"+i;	}
+	if (i>=58)  { auxi=i+4; }
+	if (i ==33)  
+		{ color="rgb(255,0,0)"; 
+		  circulo2y3(lienzo,color);
+	    }
+
+	/* circulo 1 el negro*/
+ 	lienzo.beginPath();
+    lienzo.fillStyle="rgb(0,0,0)";
+    lienzo.arc(54,54,37,0,Math.PI*2,true);
+    lienzo.fill();
+
+ 	/* circulo dinamico*/
+    lienzo.beginPath();
+    lienzo.strokeStyle=color;
+    lienzo.lineWidth = 10;    
+    lienzo.arc(54,54,45,-Math.PI/2  ,-Math.PI/2 + (auxi/10)  ,false);
+    lienzo.stroke()
+     
+    /* numeros*/ 	
+    lienzo.fillStyle=color;
+    lienzo.font="bold 59px Arial";
+    lienzo.fillText(i,20,75);
+}
+
+function dibujar_reloj(lienzo, color)
+{
+	/* fondo dinamico  el verde clarito*/ 
+    lienzo.beginPath();
+    lienzo.strokeStyle="rgb(0, 104, 139)";
+    lienzo.lineWidth = 5;    
+    lienzo.arc(54,54,45,0  ,Math.PI *2  ,false);
+    lienzo.stroke();
+ 	
+	
+   circulo2y3(lienzo,color);
+}
+
+function circulo2y3 (lienzo,color)
+{
+	/* circulo 3*/
+ 	lienzo.beginPath();
+    lienzo.strokeStyle=color;
+    lienzo.lineWidth = 4;  
+    lienzo.arc(54,54,50,0,Math.PI*2 ,true);
+    lienzo.stroke();
+
+     /* circulo 2*/
+    lienzo.beginPath();
+    lienzo.lineWidth = 4;  
+    lienzo.strokeStyle=color;
+    lienzo.arc(54,54,40,0,Math.PI*2 ,true);
+    lienzo.stroke();
+
 }
