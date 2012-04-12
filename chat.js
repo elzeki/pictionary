@@ -5,6 +5,7 @@ var pizarra_canvas;
 var pizarra_context;
 var color_pincel;
  var timerreloj;
+ var reloj_canvas;
 $(document).on("ready", iniciar);
 
 function iniciar()
@@ -40,6 +41,7 @@ function iniciar()
     else{
 			color_pincel = "#000000";
 			document.getElementById("no_html5").style.display = "none";
+
 			pizarra_canvas = document.getElementById("pizarra");
 			pizarra_context = pizarra_canvas.getContext("2d");
 			pizarra_context.strokeStyle = "#000";
@@ -78,6 +80,7 @@ function cargarusuario(e)
 	$("#formulario").show();
 	$("#chat_interno").show();
 	$("#pizarra_completa").show();
+	seteartiemporeloj(0);  /* quit me only for test*/
 
 }
 
@@ -154,7 +157,7 @@ function pintar(e) {
 	hasta ese momento.
 */
 
-function borrar(){
+function borrar(canvas){
 	pizarra_canvas.width = pizarra_canvas.width;
 	enviar_canvas();
 }
@@ -225,35 +228,80 @@ function comenzar(turno_usuario){
 	{	objpalabra.hide();	}
 }
 
-function seteartiemporeloj(esnuevousuario, i)
+function seteartiemporeloj(i)
 {
-reloj = $("#reloj");
-clearInterval(timerreloj);
-timerreloj=setInterval( 
-  function() {    
-    --i; 
-     seteartiemporestante(reloj,i);
-    }
-  ,1000);
+	reloj_canvas = document.getElementById("reloj");
+	lienzo = reloj_canvas.getContext("2d");
+	reloj_canvas.width=reloj_canvas.width;
+	color="rgb(51,255,102)";
+	dibujar_reloj(lienzo,color);
+	clearInterval(timerreloj);
+	timerreloj=setInterval( 
+	  function() {    
+	    ++i;
+	     seteartiemporestante(lienzo,i);
+	    }
+	  ,1000);
 }
 
-/*function seteartiemporeloj(esnuevousuario, i)
-{  
-	if (esnuevousuario){i}
-	else{	clearInterval(timerreloj);
-			i=10;
-			reloj = $("#reloj");
-			timerreloj=setInterval( 
-		      function() {    
-		        --i; 
-		         seteartiemporestante(reloj,i);
-		        }
-		      ,1000);
-   }
+
+function seteartiemporestante(reloj_canvas,i)
+{	
+
+	auxi=i;
+	if (i<10) {i="0"+i;	}
+	if (i>=58)  { auxi=i+4; }
+	if (i ==33)  
+		{ color="rgb(255,0,0)"; 
+		  circulo2y3(lienzo,color);
+	    }
+
+	/* circulo 1 el negro*/
+ 	lienzo.beginPath();
+    lienzo.fillStyle="rgb(0,0,0)";
+    lienzo.arc(54,54,37,0,Math.PI*2,true);
+    lienzo.fill();
+
+ 	/* circulo dinamico*/
+    lienzo.beginPath();
+    lienzo.strokeStyle=color;
+    lienzo.lineWidth = 10;    
+    lienzo.arc(54,54,45,-Math.PI/2  ,-Math.PI/2 + (auxi/10)  ,false);
+    lienzo.stroke()
+     
+    /* numeros*/ 	
+    lienzo.fillStyle=color;
+    lienzo.font="bold 59px Arial";
+    lienzo.fillText(i,20,75);
 }
-*/
-function seteartiemporestante(reloj,i)
-{reloj.text(i);
-   
+
+function dibujar_reloj(lienzo, color)
+{
+	/* fondo dinamico  el verde clarito*/ 
+    lienzo.beginPath();
+    lienzo.strokeStyle="rgb(0, 104, 139)";
+    lienzo.lineWidth = 5;    
+    lienzo.arc(54,54,45,0  ,Math.PI *2  ,false);
+    lienzo.stroke();
+ 	
+	
+   circulo2y3(lienzo,color);
+}
+
+function circulo2y3 (lienzo,color)
+{
+	/* circulo 3*/
+ 	lienzo.beginPath();
+    lienzo.strokeStyle=color;
+    lienzo.lineWidth = 4;  
+    lienzo.arc(54,54,50,0,Math.PI*2 ,true);
+    lienzo.stroke();
+
+     /* circulo 2*/
+    lienzo.beginPath();
+    lienzo.lineWidth = 4;  
+    lienzo.strokeStyle=color;
+    lienzo.arc(54,54,40,0,Math.PI*2 ,true);
+    lienzo.stroke();
 
 }

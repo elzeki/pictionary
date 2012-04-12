@@ -18,6 +18,7 @@ function arranque( usuario )
 
   cargardiccionario();
 	mostrarpalabra();
+
 }
 /* ------------------------------------------------------------------------*/ 
 function cargaruser( data )
@@ -28,9 +29,6 @@ function cargaruser( data )
   lusuarios[ lusuarios.length ] = objeto;
   cvanderito.sockets.emit( "listarnuevousuario", lusuarios );
   emitirturno();
-
-
-   //cvanderito.sockets.emit("seteartiemporeloj", false, tiempodereloj);
 }
 /* ------------------------------------------------------------------------*/
 function emitir( data )
@@ -67,7 +65,6 @@ function  sumarpuntos( data )
         emitirturno();
         mostrarpalabra();
      }
-     //cvanderito.sockets.emit( "listarnuevousuario", lusuarios );
 }
 /* ------------------------------------------------------------------------*/
 function mostrarpalabra()
@@ -76,10 +73,12 @@ function mostrarpalabra()
 }
 /*------------------------------------------------------------------------------- */
 function seteartiempo()
-{   tiempodereloj=10;
+{   
+    
+
     timer = setInterval( 
       function() {    
-        --tiempodereloj;
+        
         cambiarpalabra();
         cambiarturno();
         emitirturno()
@@ -87,7 +86,9 @@ function seteartiempo()
         if ( indicediccionario > diccionario.length ){ indicediccionario = 0; }
         mostrarpalabra( diccionario[ indicediccionario ] );
         }
-      ,10000);}
+      ,60000);
+  }
+    
 /*------------------------------------------------------------------------------- */
 function cambiarturno()
 { var auxtope = lusuarios.length;
@@ -102,7 +103,6 @@ function emitirturno()
 {  if ( lusuarios.length > 0 )
    {
       cvanderito.sockets.emit( "turnousuario", lusuarios[ turnousuario ][ 0 ], lusuarios);
-     // mandarpulsoreloj();
    }
 }
 /*------------------------------------------------------------------------------- */
@@ -129,7 +129,8 @@ function recibir_pizarra( data )
   cvanderito.sockets.emit( "pizarra_actualizada", data );
 }
 /*------------------------------------------------------------------------------- */
+
 function mandarpulsoreloj()
-{ 
- cvanderito.sockets.emit("seteartiemporeloj", false, 10);
+{  
+ cvanderito.sockets.emit("seteartiemporeloj",0);
 }
