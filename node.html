@@ -17,6 +17,7 @@
 		<form id="login">
 			<label>Login: </label>
 			<input id="user_name" type="text" maxlength="20" placeholder="" />
+			<div id="login_error" disabled="disabled">Ya hay una sesion iniciada en el mismo navegador</div>
 		</form>
 		<div id="chat_interno">
 			<ul id="lusuarios">
@@ -51,8 +52,8 @@
 				<div id="buttonviolet"class="botonera"></div><br>
 				<div id="buttonlima"class="botonera"></div><br>
 			</div>
+	    	<a href="javascript:borrar()" id="borrar_bt">Clear</a>
 	    </div><br>
-	    <a href="javascript:borrar()" id="borrar_bt">Borrar Pizarra</a>
 	</div>
 	<canvas id="reloj" width="106px" height="106px"></canvas>
 </body>

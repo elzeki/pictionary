@@ -3,12 +3,19 @@
 	border-color:#EEEEEE;
 	float:left;
 	background-color:#fff;
+	margin-left: 12px;
+	border-radius: 1em 0em 1em 1em;
 }
 
 #borrar_bt{
 	text-decoration:none;
 	color:#000;
 	font-weight:bold; 
+	float: left;
+	border:3px solid;
+	border-color: #aaa;
+	background-color:#ddf;
+	padding: 4px;
 }
 .main_container{
 	float:none;
