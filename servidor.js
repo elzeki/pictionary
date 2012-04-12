@@ -5,6 +5,7 @@ var diccionario = [];
 var turnousuario = 0;
 var indicediccionario = 0;
 var timer;
+var tiempodereloj;
 cvanderito.sockets.on( "connection", arranque );
 seteartiempo();
 
@@ -27,6 +28,9 @@ function cargaruser( data )
   lusuarios[ lusuarios.length ] = objeto;
   cvanderito.sockets.emit( "listarnuevousuario", lusuarios );
   emitirturno();
+
+
+   //cvanderito.sockets.emit("seteartiemporeloj", false, tiempodereloj);
 }
 /* ------------------------------------------------------------------------*/
 function emitir( data )
@@ -72,16 +76,18 @@ function mostrarpalabra()
 }
 /*------------------------------------------------------------------------------- */
 function seteartiempo()
-{
+{   tiempodereloj=10;
     timer = setInterval( 
-      function() {     
+      function() {    
+        --tiempodereloj;
         cambiarpalabra();
         cambiarturno();
         emitirturno()
+        mandarpulsoreloj();
         if ( indicediccionario > diccionario.length ){ indicediccionario = 0; }
         mostrarpalabra( diccionario[ indicediccionario ] );
         }
-      ,60000);}
+      ,10000);}
 /*------------------------------------------------------------------------------- */
 function cambiarturno()
 { var auxtope = lusuarios.length;
@@ -96,6 +102,7 @@ function emitirturno()
 {  if ( lusuarios.length > 0 )
    {
       cvanderito.sockets.emit( "turnousuario", lusuarios[ turnousuario ][ 0 ], lusuarios);
+     // mandarpulsoreloj();
    }
 }
 /*------------------------------------------------------------------------------- */
@@ -116,8 +123,13 @@ function cargardiccionario()
   diccionario = [ "triangulo", "pera", "manzana", "banana", "casa", "auto", "computadora", "mesa", "silla", "guante"
                 , "pelota", "heladera", "monitor", "lapicera", "anteojos", "reloj", "azucar", "teclado", "empresa"];
 }
-
+/*------------------------------------------------------------------------------- */
 function recibir_pizarra( data )
 {
   cvanderito.sockets.emit( "pizarra_actualizada", data );
+}
+/*------------------------------------------------------------------------------- */
+function mandarpulsoreloj()
+{ 
+ cvanderito.sockets.emit("seteartiemporeloj", false, 10);
 }

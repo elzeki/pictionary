@@ -34,3 +34,7 @@
 .main_container .colors_container #buttonterreverte { background-color: #385E0F}
 .main_container .colors_container #buttonviolet { background-color: #9900CC}
 .main_container .colors_container #buttonlima { background-color: #00FF00}
+
+#reloj {
+	background:red;
+}

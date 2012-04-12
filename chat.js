@@ -4,6 +4,7 @@ var color_linea_chat = true; //alterna de true a false para saber de que color p
 var pizarra_canvas;
 var pizarra_context;
 var color_pincel;
+ var timerreloj;
 $(document).on("ready", iniciar);
 
 function iniciar()
@@ -18,6 +19,7 @@ function iniciar()
 	websocket.on("nombreDesdeServidor", recibirMensaje);
 	websocket.on("palabra", mostrarpalabra);
 	websocket.on("turnousuario", setearturnousuario);
+    websocket.on("seteartiemporeloj", seteartiemporeloj);
 	if($("#turno_usuario").text() != user )
 	{
 		websocket.on("pizarra_actualizada", recibir_canvas);
@@ -158,7 +160,7 @@ function borrar(){
 }
 
 function setearturnousuario(usuario, users_server)
-{
+{   
   	var objpalabra = $("#palabra");
    $("#turno_usuario").text(usuario);
   	if( user == $("#turno_usuario").text() )
@@ -221,4 +223,37 @@ function comenzar(turno_usuario){
 	{	objpalabra.show();	}
 	else
 	{	objpalabra.hide();	}
+}
+
+function seteartiemporeloj(esnuevousuario, i)
+{
+reloj = $("#reloj");
+clearInterval(timerreloj);
+timerreloj=setInterval( 
+  function() {    
+    --i; 
+     seteartiemporestante(reloj,i);
+    }
+  ,1000);
+}
+
+/*function seteartiemporeloj(esnuevousuario, i)
+{  
+	if (esnuevousuario){i}
+	else{	clearInterval(timerreloj);
+			i=10;
+			reloj = $("#reloj");
+			timerreloj=setInterval( 
+		      function() {    
+		        --i; 
+		         seteartiemporestante(reloj,i);
+		        }
+		      ,1000);
+   }
+}
+*/
+function seteartiemporestante(reloj,i)
+{reloj.text(i);
+   
+
 }
