@@ -1,11 +1,11 @@
 //mejorando.la/node.js/servidor.js
-var cvanderito = require( "socket.io" ).listen( 6969 );
+var my_socket = require( "socket.io" ).listen( 6969 );
 var lusuarios = [];
 var diccionario = [];
 var turnousuario = 0;
 var indicediccionario = 0;
 var timer;
-cvanderito.sockets.on( "connection", arranque );
+my_socket.sockets.on( "connection", arranque );
 seteartiempo();
 
 /* ------------------------------------------------------------------------*/
@@ -25,13 +25,13 @@ function cargaruser( data )
   var point = 0;
   var objeto = { "0" : user_name, "1" : point };
   lusuarios[ lusuarios.length ] = objeto;
-  cvanderito.sockets.emit( "listarnuevousuario", lusuarios );
+  my_socket.sockets.emit( "listarnuevousuario", lusuarios );
   emitirturno();
 }
 /* ------------------------------------------------------------------------*/
 function emitir( data )
 {
-  cvanderito.sockets.emit( "nombreDesdeServidor", data );
+  my_socket.sockets.emit( "nombreDesdeServidor", data );
 }
 /* ------------------------------------------------------------------------*/
 function asignarpuntosusuario( nombreusuario )
@@ -63,12 +63,12 @@ function  sumarpuntos( data )
         emitirturno();
         mostrarpalabra();
      }
-     //cvanderito.sockets.emit( "listarnuevousuario", lusuarios );
+     //my_socket.sockets.emit( "listarnuevousuario", lusuarios );
 }
 /* ------------------------------------------------------------------------*/
 function mostrarpalabra()
 {
-   cvanderito.sockets.emit( "palabra", diccionario[ indicediccionario ] );  
+   my_socket.sockets.emit( "palabra", diccionario[ indicediccionario ] );  
 }
 /*------------------------------------------------------------------------------- */
 function seteartiempo()
@@ -95,15 +95,13 @@ function cambiarturno()
 function emitirturno()
 {  if ( lusuarios.length > 0 )
    {
-      cvanderito.sockets.emit( "turnousuario", lusuarios[ turnousuario ][ 0 ], lusuarios);
+      my_socket.sockets.emit( "turnousuario", lusuarios[ turnousuario ][ 0 ], lusuarios);
    }
 }
 /*------------------------------------------------------------------------------- */
 function cambiarpalabra()
 {
-  var random = Math.floor ( diccionario.length * Math.random() );
-  indicediccionario = random;
-
+  indicediccionario = Math.floor ( diccionario.length * Math.random() );
 }
 /*------------------------------------------------------------------------------- */
 function reiniciartimer()
@@ -119,5 +117,5 @@ function cargardiccionario()
 
 function recibir_pizarra( data )
 {
-  cvanderito.sockets.emit( "pizarra_actualizada", data );
+  my_socket.sockets.emit( "pizarra_actualizada", data );
 }

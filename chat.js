@@ -4,49 +4,43 @@ var color_linea_chat = true; //alterna de true a false para saber de que color p
 var pizarra_canvas;
 var pizarra_context;
 var color_pincel;
+
 $(document).on("ready", iniciar);
 
 function iniciar()
 {
-	$("#formulario").hide();
-	$("#chat_interno").hide();
-	$("#pizarra_completa").hide();
-
-	websocket.on("begin", comenzar);
-
-	websocket.on("listarnuevousuario", mostrarusuarios);
-	websocket.on("nombreDesdeServidor", recibirMensaje);
-	websocket.on("palabra", mostrarpalabra);
-	websocket.on("turnousuario", setearturnousuario);
-	if($("#turno_usuario").text() != user )
+	if( !Modernizr.canvas )
 	{
-		websocket.on("pizarra_actualizada", recibir_canvas);
-	}
-
-	if($("#turno_usuario").text() == user )
-	{
-		websocket.on("pizarra", enviar_canvas);
-	}
-	$("#formulario").on("submit",enviarMensaje);
-	$("#login").on("submit",cargarusuario);
-
-	//setInterval( function() {  enviar_canvas(); }, 1000 );
-
-	if( !Modernizr.canvas ){
 		$("#contenedor_pizarra").style.display = "none";
     }
-    else{
-			color_pincel = "#000000";
-			document.getElementById("no_html5").style.display = "none";
-			pizarra_canvas = document.getElementById("pizarra");
-			pizarra_context = pizarra_canvas.getContext("2d");
-			pizarra_context.strokeStyle = "#000";
-			pizarra_canvas.addEventListener("mousedown",empezarPintar,false);
-			pizarra_canvas.addEventListener("mouseup",terminarPintar,false);
+	else
+	{
+		$("#formulario").hide();
+		$("#chat_interno").hide();
+		$("#pizarra_completa").hide();
 
-			$(".botonera").mousedown(function(){ setColor( $(this).css("background-color"));});
-			pizarra_canvas.addEventListener("mouseup",enviar_canvas,false);
-		}
+		websocket.on("listarnuevousuario", mostrarusuarios);
+		websocket.on("nombreDesdeServidor", recibirMensaje);
+		websocket.on("palabra", mostrarpalabra);
+		websocket.on("turnousuario", setearturnousuario);
+		if($("#turno_usuario").text() != user )
+		{	websocket.on("pizarra_actualizada", recibir_canvas); }
+		else
+		{	websocket.on("pizarra", enviar_canvas); }
+		$("#formulario").on("submit",enviarMensaje);
+		$("#login").on("submit",cargarusuario);
+
+		color_pincel = "#000000";
+		document.getElementById("no_html5").style.display = "none";
+		pizarra_canvas = document.getElementById("pizarra");
+		pizarra_context = pizarra_canvas.getContext("2d");
+		pizarra_context.strokeStyle = "#000";
+		pizarra_canvas.addEventListener("mousedown",empezarPintar,false);
+		pizarra_canvas.addEventListener("mouseup",terminarPintar,false);
+		pizarra_canvas.addEventListener("mouseup",enviar_canvas,false);
+
+		$(".botonera").mousedown(function(){ setColor( $(this).css("background-color"));});
+	}
 }
 
 function mostrarusuarios(users_server)
@@ -72,6 +66,7 @@ function cargarusuario(e)
 	$("#user_name_label").text(user + ":");
    	e.preventDefault();
 	websocket.emit("nuevoUsuario", user);
+
 	$("#login").hide();
 	$("#formulario").show();
 	$("#chat_interno").show();
@@ -81,15 +76,16 @@ function cargarusuario(e)
 
 function enviarMensaje(e)
 {
-	var user_name = user;
 	var user_text = $("#user_text").val();
-	var user_name_and_text = { "0" : user_name, "1" : user_text };
+	var user_name_and_text = { "0" : user, "1" : user_text };
 	e.preventDefault();
 	websocket.emit("nuevoTexto", user_name_and_text );
 	$("#user_text").val("");
 }
 function recibirMensaje(datosServidor)
 {
+	//tengo que sacar la variable color_linea_chat pero no se como
+
 	if (color_linea_chat){
 		$("#tmensajes").append("<tr style='background:#aaa'><td style='width:100px'>" + datosServidor["0"] + ": </td><td style='width:200px'>" + datosServidor["1"] + "</td></tr>");
 		color_linea_chat = !color_linea_chat;
@@ -114,18 +110,21 @@ function mostrarpalabra(palabra)
 	{	objpalabra.hide();	}
 }
 
-//funciones de la pizarra
+//funciones de la pizarra ***************************************************************************
 
 function setColor(buttonColor){
 	color_pincel = buttonColor;
 }
 
 function empezarPintar(e){
-	se_modifico_pizarra = true;
-	pizarra_context.beginPath();
-	pizarra_context.strokeStyle = color_pincel;
-	pizarra_context.moveTo(e.clientX-pizarra_canvas.offsetLeft,e.clientY-pizarra_canvas.offsetTop);
-	pizarra_canvas.addEventListener("mousemove",pintar,false)
+	if($("#turno_usuario").text() == user )
+	{
+		se_modifico_pizarra = true;
+		pizarra_context.beginPath();
+		pizarra_context.strokeStyle = color_pincel;
+		pizarra_context.moveTo(e.clientX-pizarra_canvas.offsetLeft, e.clientY-pizarra_canvas.offsetTop);
+		pizarra_canvas.addEventListener("mousemove", pintar, false)
+	}
 }
 
 /*
@@ -143,8 +142,11 @@ function terminarPintar(e){
 */
 
 function pintar(e) {
-	pizarra_context.lineTo(e.clientX-pizarra_canvas.offsetLeft,e.clientY-pizarra_canvas.offsetTop);
-	pizarra_context.stroke();
+	if($("#turno_usuario").text() == user )
+	{
+		pizarra_context.lineTo(e.clientX-pizarra_canvas.offsetLeft,e.clientY-pizarra_canvas.offsetTop);
+		pizarra_context.stroke();
+	}
 }
 	
 /*
@@ -156,6 +158,8 @@ function borrar(){
 	pizarra_canvas.width = pizarra_canvas.width;
 	enviar_canvas();
 }
+
+//***************************************************************************************************
 
 function setearturnousuario(usuario, users_server)
 {
@@ -190,7 +194,7 @@ function enviar_canvas()
 		var dataURL = pizarra.toDataURL();
 		websocket.emit("pizarra", dataURL );
 		se_modifico_pizarra = false;
-		
+		$("#pizarra").removeAttr("disabled");
 	}
 }
 
@@ -201,24 +205,17 @@ function recibir_canvas(canvas_recibido)
 		borrar();
 		loadCanvas(canvas_recibido);
     }
+		$("#pizarra").attr("disabled","disabled");
 }
 
 function loadCanvas(dataURL){
     var canvas = document.getElementById("pizarra");
     var context = canvas.getContext("2d");
  
-    // load image from data url
     var imageObj = new Image();
     imageObj.onload = function(){
         context.drawImage(this, 0, 0);
     };
  
     imageObj.src = dataURL;
-}
-
-function comenzar(turno_usuario){
-	if( user == $("#turno_usuario").text() )
-	{	objpalabra.show();	}
-	else
-	{	objpalabra.hide();	}
 }
