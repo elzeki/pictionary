@@ -7,39 +7,47 @@ var color_pincel;
 
 $(document).on("ready", iniciar);
 
+$(window).load(function()
+{
+			$("#formulario").hide();
+			$("#chat_interno").hide();
+			$("#pizarra_completa").hide();
+			$("#login_error").hide();
+});
+
 function iniciar()
 {
-	if( !Modernizr.canvas )
+	if(typeof(Storage)!=="undefined")
 	{
-		$("#contenedor_pizarra").style.display = "none";
-    }
-	else
-	{
-		$("#formulario").hide();
-		$("#chat_interno").hide();
-		$("#pizarra_completa").hide();
-
-		websocket.on("listarnuevousuario", mostrarusuarios);
-		websocket.on("nombreDesdeServidor", recibirMensaje);
-		websocket.on("palabra", mostrarpalabra);
-		websocket.on("turnousuario", setearturnousuario);
-		if($("#turno_usuario").text() != user )
-		{	websocket.on("pizarra_actualizada", recibir_canvas); }
+		if( !Modernizr.canvas )
+		{
+			$("#contenedor_pizarra").style.display = "none";
+	    }
 		else
-		{	websocket.on("pizarra", enviar_canvas); }
-		$("#formulario").on("submit",enviarMensaje);
-		$("#login").on("submit",cargarusuario);
+		{
 
-		color_pincel = "#000000";
-		document.getElementById("no_html5").style.display = "none";
-		pizarra_canvas = document.getElementById("pizarra");
-		pizarra_context = pizarra_canvas.getContext("2d");
-		pizarra_context.strokeStyle = "#000";
-		pizarra_canvas.addEventListener("mousedown",empezarPintar,false);
-		pizarra_canvas.addEventListener("mouseup",terminarPintar,false);
-		pizarra_canvas.addEventListener("mouseup",enviar_canvas,false);
+			websocket.on("listarnuevousuario", mostrarusuarios);
+			websocket.on("nombreDesdeServidor", recibirMensaje);
+			websocket.on("palabra", mostrarpalabra);
+			websocket.on("turnousuario", setearturnousuario);
+			if($("#turno_usuario").text() != user )
+			{	websocket.on("pizarra_actualizada", recibir_canvas); }
+			else
+			{	websocket.on("pizarra", enviar_canvas); }
+			$("#formulario").on("submit",enviarMensaje);
+			$("#login").on("submit",cargarusuario);
 
-		$(".botonera").mousedown(function(){ setColor( $(this).css("background-color"));});
+			color_pincel = "#000000";
+			document.getElementById("no_html5").style.display = "none";
+			pizarra_canvas = document.getElementById("pizarra");
+			pizarra_context = pizarra_canvas.getContext("2d");
+			pizarra_context.strokeStyle = "#000";
+			pizarra_canvas.addEventListener("mousedown",empezarPintar,false);
+			pizarra_canvas.addEventListener("mouseup",terminarPintar,false);
+			pizarra_canvas.addEventListener("mouseup",enviar_canvas,false);
+
+			$(".botonera").mousedown(function(){ setColor( $(this).css("background-color"));});
+		}
 	}
 }
 
@@ -54,7 +62,8 @@ function mostrarusuarios(users_server)
 		{
 			listausuarios.append("<li style = 'font-weight: bold; background:yellow;'>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
 		}
-		else {
+		else
+		{
 	  		listausuarios.append("<li>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
 	  	}
 	};
@@ -62,16 +71,23 @@ function mostrarusuarios(users_server)
 
 function cargarusuario(e) 
 {
-   	user = $("#user_name").val();
-	$("#user_name_label").text(user + ":");
-   	e.preventDefault();
-	websocket.emit("nuevoUsuario", user);
+	if(window.sessionStorage.player == null)
+	{
+	   	user = $("#user_name").val();
+		window.sessionStorage.player = user;
+		$("#user_name_label").text(user + ":");
+	   	e.preventDefault();
+		websocket.emit("nuevoUsuario", user);
 
-	$("#login").hide();
-	$("#formulario").show();
-	$("#chat_interno").show();
-	$("#pizarra_completa").show();
-
+		$("#login").hide();
+		$("#formulario").show();
+		$("#chat_interno").show();
+		$("#pizarra_completa").show();
+	}
+	else
+	{
+		$("#login_error").show();
+	}
 }
 
 function enviarMensaje(e)
