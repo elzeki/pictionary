@@ -56,17 +56,17 @@ function iniciar()
 
 function mostrarusuarios(users_server)
 {
-	$("#lusuarios li").remove();
+	$("#lusuarios tr").remove();
 	listausuarios= $("#lusuarios");
-	listausuarios.append("<li>" + "Usuarios | Puntos" + "</li>");
+	listausuarios.append("<tr><td>Usuarios </td><td> Puntos</td></tr>");
 
 	for (var i = users_server.length - 1; i >= 0; i--) {
 	 		if (users_server[i]["0"] == $("#turno_usuario").text())
 		{
-			listausuarios.append("<li style = 'font-weight: bold; background:yellow;'>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
 		}
 		else {
-	  		listausuarios.append("<li>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+	  		listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
 	  	}
 	};
 }
@@ -184,18 +184,19 @@ function setearturnousuario(usuario, users_server)
 	else
 	{	objpalabra.visibility = "hidden";	}
 
-   $("#lusuarios li").remove();
+   $("#lusuarios tr").remove();
 	listausuarios= $("#lusuarios");
-	listausuarios.append("<li>" + "Usuarios | Puntos" + "</li>");
+
+	listausuarios.append("<tr><td>Usuarios </td><td> Puntos</td></tr>");
 
 	for (var i = users_server.length - 1; i >= 0; i--) {
-		if (users_server[i]["0"] == $("#turno_usuario").text())
+	 		if (users_server[i]["0"] == $("#turno_usuario").text())
 		{
-			listausuarios.append("<li style = 'font-weight: bold; background:yellow;'>" + users_server[i]["0"]  + " | "+users_server[i]["1"]+ "</li>");
+			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
 		}
 		else {
-	  		listausuarios.append("<li>" + users_server[i]["0"]  + " | "+users_server[i]["1"]+ "</li>");
-	  	}	
+	  		listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
+	  	}
 	};
 	borrar();
 
