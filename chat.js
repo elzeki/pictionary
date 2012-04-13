@@ -8,9 +8,9 @@ var color_pincel;
  var reloj_canvas;
 
 $(document).on("ready", iniciar);
-
+ 
 function iniciar()
-{
+{  
 	if( !Modernizr.canvas )
 	{
 		$("#contenedor_pizarra").style.display = "none";
@@ -26,6 +26,8 @@ function iniciar()
 		websocket.on("palabra", mostrarpalabra);
 		websocket.on("turnousuario", setearturnousuario);
 		websocket.on("seteartiemporeloj", seteartiemporeloj);
+		websocket.on("detener_tiempo_reloj",detener_tiempo_reloj);
+		websocket.on("ultimos_segundos", ultimos_segundos);
 		
 		if($("#turno_usuario").text() != user )
 		{	websocket.on("pizarra_actualizada", recibir_canvas); }
@@ -233,7 +235,13 @@ function comenzar(turno_usuario){
 	{	objpalabra.hide();	}
 }
 
-function seteartiemporeloj(i)
+function detener_tiempo_reloj()
+{
+	clearInterval( timerreloj );
+
+}
+
+function seteartiemporeloj(i, ultimos_segundos)
 {
 	reloj_canvas = document.getElementById("reloj");
 	lienzo = reloj_canvas.getContext("2d");
@@ -241,12 +249,25 @@ function seteartiemporeloj(i)
 	color="rgb(51,255,102)";
 	dibujar_reloj(lienzo,color);
 	clearInterval(timerreloj);
-	timerreloj=setInterval( 
+	if (ultimos_segundos) // cuenta regresiva de 10 a 0 
+  	{  
+      timerreloj=setInterval( 
 	  function() {    
-	    ++i;
-	     seteartiemporestante(lienzo,i);
+	    --i;
+	    if (i>= 0)
+	     {seteartiemporestante(lienzo,i);}
 	    }
-	  ,1000);
+	  ,1000);  		
+  	}
+  	else   // cuenta de 0 a 60
+  	{
+		timerreloj=setInterval( 
+		  function() {    
+		    ++i;
+		     seteartiemporestante(lienzo,i);
+		    }
+		  ,1000);
+	}
 }
 
 
@@ -309,4 +330,7 @@ function circulo2y3 (lienzo,color)
     lienzo.arc(54,54,40,0,Math.PI*2 ,true);
     lienzo.stroke();
 
+}
+function ultimos_segundos( segundos )
+{   seteartiemporeloj( segundos, true );
 }
