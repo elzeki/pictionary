@@ -4,8 +4,8 @@ var color_linea_chat = true; //alterna de true a false para saber de que color p
 var pizarra_canvas;
 var pizarra_context;
 var color_pincel;
- var timerreloj;
- var reloj_canvas;
+var timerreloj;
+var reloj_canvas;
 
 $(document).on("ready", iniciar);
  
@@ -20,6 +20,7 @@ function iniciar()
 		$("#formulario").hide();
 		$("#chat_interno").hide();
 		$("#pizarra_completa").hide();
+		$("#turno_usuario").hide();
 
 		websocket.on("listarnuevousuario", mostrarusuarios);
 		websocket.on("nombreDesdeServidor", recibirMensaje);
@@ -29,11 +30,17 @@ function iniciar()
 		websocket.on("detener_tiempo_reloj",detener_tiempo_reloj);
 		websocket.on("ultimos_segundos", ultimos_segundos);
 		
-		if($("#turno_usuario").text() != user )
-		{	websocket.on("pizarra_actualizada", recibir_canvas); }
-		else
-		{	websocket.on("pizarra", enviar_canvas); }
 		$("#formulario").on("submit",enviarMensaje);
+		
+		if($("#turno_usuario").text() != user )
+		{	
+			websocket.on("pizarra_actualizada", recibir_canvas);
+		 }
+		else
+		{	
+			websocket.on("pizarra", enviar_canvas);
+		}
+
 		$("#login").on("submit",cargarusuario);
 
 		color_pincel = "#000000";
@@ -77,7 +84,8 @@ function cargarusuario(e)
 	$("#formulario").show();
 	$("#chat_interno").show();
 	$("#pizarra_completa").show();
-	seteartiemporeloj(0);  /* quit me only for test*/
+	$("#turno_usuario").show();
+	//seteartiemporeloj(0);  /* quit me only for test*/
 
 }
 
@@ -88,11 +96,11 @@ function enviarMensaje(e)
 	e.preventDefault();
 	websocket.emit("nuevoTexto", user_name_and_text );
 	$("#user_text").val("");
+	
 }
 function recibirMensaje(datosServidor)
 {
 	//tengo que sacar la variable color_linea_chat pero no se como
-
 	if (color_linea_chat){
 		$("#tmensajes").append("<tr style='background:#aaa'><td style='width:100px'>" + datosServidor["0"] + ": </td><td style='width:200px'>" + datosServidor["1"] + "</td></tr>");
 		color_linea_chat = !color_linea_chat;
@@ -112,9 +120,9 @@ function mostrarpalabra(palabra)
   objpalabra.text(palabra);
 
   	if( user == $("#turno_usuario").text() )
-	{	objpalabra.show();	}
+	{	objpalabra.visibility = "visible";	}
 	else
-	{	objpalabra.hide();	}
+	{	objpalabra.visibility = "hidden";	}
 }
 
 //funciones de la pizarra ***************************************************************************
@@ -172,10 +180,11 @@ function setearturnousuario(usuario, users_server)
 {   
   	var objpalabra = $("#palabra");
    $("#turno_usuario").text(usuario);
+
   	if( user == $("#turno_usuario").text() )
-	{	objpalabra.show();	}
+	{	objpalabra.visibility = "visible";	}
 	else
-	{	objpalabra.hide();	}
+	{	objpalabra.visibility = "hidden";	}
 
    $("#lusuarios li").remove();
 	listausuarios= $("#lusuarios");
@@ -184,13 +193,22 @@ function setearturnousuario(usuario, users_server)
 	for (var i = users_server.length - 1; i >= 0; i--) {
 		if (users_server[i]["0"] == $("#turno_usuario").text())
 		{
-			listausuarios.append("<li style = 'font-weight: bold; background:yellow;'>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+			listausuarios.append("<li style = 'font-weight: bold; background:yellow;'>" + users_server[i]["0"]  + " | "+users_server[i]["1"]+ "</li>");
 		}
 		else {
-	  		listausuarios.append("<li>" + users_server[i]["0"]  + "|"+users_server[i]["1"]+ "</li>");
+	  		listausuarios.append("<li>" + users_server[i]["0"]  + " | "+users_server[i]["1"]+ "</li>");
 	  	}	
 	};
 	borrar();
+
+	if( $("#turno_usuario").text() == user)
+	{
+		$("#formulario input").attr("disabled","disabled");
+	}
+	else
+	{
+		$("#formulario input").removeAttr("disabled");
+	}
 }
 
 function enviar_canvas()
@@ -212,7 +230,7 @@ function recibir_canvas(canvas_recibido)
 		borrar();
 		loadCanvas(canvas_recibido);
     }
-		$("#pizarra").attr("disabled","disabled");
+	$("#pizarra").attr("disabled","disabled");
 }
 
 function loadCanvas(dataURL){
@@ -229,10 +247,11 @@ function loadCanvas(dataURL){
 
 
 function comenzar(turno_usuario){
-	if( user == $("#turno_usuario").text() )
-	{	objpalabra.show();	}
+
+  	if( user == $("#turno_usuario").text() )
+	{	objpalabra.visibility = "visible";	}
 	else
-	{	objpalabra.hide();	}
+	{	objpalabra.visibility = "hidden";	}
 }
 
 function detener_tiempo_reloj()
