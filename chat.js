@@ -118,11 +118,13 @@ function mostrarpalabra(palabra)
 {
   var objpalabra = $("#palabra");
   objpalabra.text(palabra);
-
+  
   	if( user == $("#turno_usuario").text() )
-	{	objpalabra.visibility = "visible";	}
+	{	objpalabra.css({visibility: 'visible'});
+    }
 	else
-	{	objpalabra.visibility = "hidden";	}
+	{	objpalabra.css({visibility: 'hidden'});
+	}
 }
 
 //funciones de la pizarra ***************************************************************************
