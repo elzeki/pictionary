@@ -1,6 +1,6 @@
 var websocket = io.connect("http://localhost:6969");
 var user;
-var color_linea_chat = true; //alterna de true a false para saber de que color pinat la linea
+var color_linea_chat = true; //alterna de true a false para saber de que color pinta la linea
 var pizarra_canvas;
 var pizarra_context;
 var color_pincel;
@@ -14,7 +14,7 @@ function iniciar()
 	if( !Modernizr.canvas )
 	{
 		$("#contenedor_pizarra").style.display = "none";
-    }
+	}
 	else
 	{
 		$("#formulario").hide();
@@ -29,6 +29,7 @@ function iniciar()
 		websocket.on("seteartiemporeloj", seteartiemporeloj);
 		websocket.on("detener_tiempo_reloj",detener_tiempo_reloj);
 		websocket.on("ultimos_segundos", ultimos_segundos);
+		websocket.on("bloquear_usuario_ganador", bloquear_usuario_ganador);
 		
 		$("#formulario").on("submit",enviarMensaje);
 		
@@ -60,24 +61,35 @@ function mostrarusuarios(users_server)
 {
 	$("#lusuarios tr").remove();
 	listausuarios= $("#lusuarios");
-	listausuarios.append("<tr><td>Usuarios </td><td> Puntos</td></tr>");
+	listausuarios.append("<tr><td>Usuarios</td><td>Puntos</td></tr>");
 
 	for (var i = users_server.length - 1; i >= 0; i--) {
-	 		if (users_server[i]["0"] == $("#turno_usuario").text())
+			if (users_server[i]["0"] == $("#turno_usuario").text())
 		{
 			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
 		}
 		else {
-	  		listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
-	  	}
+			listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
+		}
 	};
+
+	var objpalabra = $("#palabra");
+	if( user == $("#turno_usuario").text() )
+	{	
+		objpalabra.css({visibility: 'visible'});
+	}
+	else
+	{	
+		objpalabra.css({visibility: 'hidden'});
+		//objpalabra.text("no te importa!");
+	}
 }
 
 function cargarusuario(e) 
 {
-   	user = $("#user_name").val();
+	user = $("#user_name").val();
 	$("#user_name_label").text(user + ":");
-   	e.preventDefault();
+	e.preventDefault();
 	websocket.emit("nuevoUsuario", user);
 
 	$("#login").hide();
@@ -87,6 +99,16 @@ function cargarusuario(e)
 	$("#turno_usuario").show();
 	//seteartiemporeloj(0);  /* quit me only for test*/
 
+	var objpalabra = $("#palabra");
+	if( user == $("#turno_usuario").text() )
+	{	
+		objpalabra.css({visibility: 'visible'});
+	}
+	else
+	{	
+		objpalabra.css({visibility: 'hidden'});
+		//objpalabra.text("no te importa!");
+	}
 }
 
 function enviarMensaje(e)
@@ -119,11 +141,14 @@ function mostrarpalabra(palabra)
   var objpalabra = $("#palabra");
   objpalabra.text(palabra);
   
-  	if( user == $("#turno_usuario").text() )
-	{	objpalabra.css({visibility: 'visible'});
-    }
+	if( user == $("#turno_usuario").text() )
+	{	
+		objpalabra.css({visibility: 'visible'});
+	}
 	else
-	{	objpalabra.css({visibility: 'hidden'});
+	{	
+		objpalabra.css({visibility: 'hidden'});
+		objpalabra.text("no te importa!");
 	}
 }
 
@@ -180,27 +205,32 @@ function borrar(canvas){
 
 function setearturnousuario(usuario, users_server)
 {   
-  	var objpalabra = $("#palabra");
+	var objpalabra = $("#palabra");
    $("#turno_usuario").text(usuario);
 
-  	if( user == $("#turno_usuario").text() )
-	{	objpalabra.visibility = "visible";	}
+	if( user == $("#turno_usuario").text() )
+	{	
+		objpalabra.css({visibility: 'visible'});
+	}
 	else
-	{	objpalabra.visibility = "hidden";	}
-
+	{	
+		objpalabra.css({visibility: 'hidden'});
+		//objpalabra.text("no te importa!");
+	}
    $("#lusuarios tr").remove();
 	listausuarios= $("#lusuarios");
 
-	listausuarios.append("<tr><td>Usuarios </td><td> Puntos</td></tr>");
+	listausuarios.append("<tr><td>Usuarios</td><td>Puntos</td></tr>");
 
 	for (var i = users_server.length - 1; i >= 0; i--) {
-	 		if (users_server[i]["0"] == $("#turno_usuario").text())
+		if (users_server[i]["0"] == $("#turno_usuario").text())
 		{
 			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
 		}
-		else {
-	  		listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
-	  	}
+		else 
+		{
+			listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
+		}
 	};
 	borrar();
 
@@ -232,29 +262,36 @@ function recibir_canvas(canvas_recibido)
 	{
 		borrar();
 		loadCanvas(canvas_recibido);
-    }
+	}
 	$("#pizarra").attr("disabled","disabled");
 }
 
 function loadCanvas(dataURL){
-    var canvas = document.getElementById("pizarra");
-    var context = canvas.getContext("2d");
+	var canvas = document.getElementById("pizarra");
+	var context = canvas.getContext("2d");
  
-    var imageObj = new Image();
-    imageObj.onload = function(){
-        context.drawImage(this, 0, 0);
-    };
+	var imageObj = new Image();
+	imageObj.onload = function(){
+		context.drawImage(this, 0, 0);
+	};
  
-    imageObj.src = dataURL;
+	imageObj.src = dataURL;
 }
 
 
 function comenzar(turno_usuario){
 
-  	if( user == $("#turno_usuario").text() )
-	{	objpalabra.visibility = "visible";	}
+	if( user == $("#turno_usuario").text() )
+	{	
+		objpalabra.css({visibility: 'visible'});
+	}
 	else
-	{	objpalabra.visibility = "hidden";	}
+	{	
+		objpalabra.css({visibility: 'hidden'});
+		objpalabra.text("no te importa!");
+	}
+
+	if( user != $("#turno_usuario").text() ){ $("#formulario input").removeAttr("disabled"); }
 }
 
 function detener_tiempo_reloj()
@@ -272,22 +309,22 @@ function seteartiemporeloj(i, ultimos_segundos)
 	dibujar_reloj(lienzo,color);
 	clearInterval(timerreloj);
 	if (ultimos_segundos) // cuenta regresiva de 10 a 0 
-  	{  
-      timerreloj=setInterval( 
+	{  
+	  timerreloj=setInterval( 
 	  function() {    
-	    --i;
-	    if (i>= 0)
-	     {seteartiemporestante(lienzo,i);}
-	    }
+		--i;
+		if (i>= 0)
+		 {seteartiemporestante(lienzo,i);}
+		}
 	  ,1000);  		
-  	}
-  	else   // cuenta de 0 a 60
-  	{
+	}
+	else   // cuenta de 0 a 60
+	{
 		timerreloj=setInterval( 
 		  function() {    
-		    ++i;
-		     seteartiemporestante(lienzo,i);
-		    }
+			++i;
+			 seteartiemporestante(lienzo,i);
+			}
 		  ,1000);
 	}
 }
@@ -300,38 +337,39 @@ function seteartiemporestante(reloj_canvas,i)
 	if (i<10) {i="0"+i;	}
 	if (i>=58)  { auxi=i+4; }
 	if (i ==33)  
-		{ color="rgb(255,0,0)"; 
-		  circulo2y3(lienzo,color);
-	    }
+		{ 
+			color="rgb(255,0,0)"; 
+			circulo2y3(lienzo,color);
+		}
 
 	/* circulo 1 el negro*/
- 	lienzo.beginPath();
-    lienzo.fillStyle="rgb(0,0,0)";
-    lienzo.arc(54,54,37,0,Math.PI*2,true);
-    lienzo.fill();
+	lienzo.beginPath();
+	lienzo.fillStyle="rgb(0,0,0)";
+	lienzo.arc(54,54,37,0,Math.PI*2,true);
+	lienzo.fill();
 
- 	/* circulo dinamico*/
-    lienzo.beginPath();
-    lienzo.strokeStyle=color;
-    lienzo.lineWidth = 10;    
-    lienzo.arc(54,54,45,-Math.PI/2  ,-Math.PI/2 + (auxi/10)  ,false);
-    lienzo.stroke()
-     
-    /* numeros*/ 	
-    lienzo.fillStyle=color;
-    lienzo.font="bold 59px Arial";
-    lienzo.fillText(i,20,75);
+	/* circulo dinamico*/
+	lienzo.beginPath();
+	lienzo.strokeStyle=color;
+	lienzo.lineWidth = 10;    
+	lienzo.arc(54,54,45,-Math.PI/2  ,-Math.PI/2 + (auxi/10)  ,false);
+	lienzo.stroke()
+	 
+	/* numeros*/ 	
+	lienzo.fillStyle=color;
+	lienzo.font="bold 59px Arial";
+	lienzo.fillText(i,20,75);
 }
 
 function dibujar_reloj(lienzo, color)
 {
 	/* fondo dinamico  el verde clarito*/ 
-    lienzo.beginPath();
-    lienzo.strokeStyle="rgb(0, 104, 139)";
-    lienzo.lineWidth = 5;    
-    lienzo.arc(54,54,45,0  ,Math.PI *2  ,false);
-    lienzo.stroke();
- 	
+	lienzo.beginPath();
+	lienzo.strokeStyle="rgb(0, 104, 139)";
+	lienzo.lineWidth = 5;    
+	lienzo.arc(54,54,45,0  ,Math.PI *2  ,false);
+	lienzo.stroke();
+	
 	
    circulo2y3(lienzo,color);
 }
@@ -339,20 +377,29 @@ function dibujar_reloj(lienzo, color)
 function circulo2y3 (lienzo,color)
 {
 	/* circulo 3*/
- 	lienzo.beginPath();
-    lienzo.strokeStyle=color;
-    lienzo.lineWidth = 4;  
-    lienzo.arc(54,54,50,0,Math.PI*2 ,true);
-    lienzo.stroke();
+	lienzo.beginPath();
+	lienzo.strokeStyle=color;
+	lienzo.lineWidth = 4;  
+	lienzo.arc(54,54,50,0,Math.PI*2 ,true);
+	lienzo.stroke();
 
-     /* circulo 2*/
-    lienzo.beginPath();
-    lienzo.lineWidth = 4;  
-    lienzo.strokeStyle=color;
-    lienzo.arc(54,54,40,0,Math.PI*2 ,true);
-    lienzo.stroke();
+	 /* circulo 2*/
+	lienzo.beginPath();
+	lienzo.lineWidth = 4;  
+	lienzo.strokeStyle=color;
+	lienzo.arc(54,54,40,0,Math.PI*2 ,true);
+	lienzo.stroke();
 
 }
 function ultimos_segundos( segundos )
-{   seteartiemporeloj( segundos, true );
+{
+   seteartiemporeloj( segundos, true );
+}
+
+function bloquear_usuario_ganador( usuario_bloqueado )
+{
+	if(usuario_bloqueado == user )
+	{
+		$("#formulario input").attr("disabled","disabled");	
+	}
 }

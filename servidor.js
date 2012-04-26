@@ -92,6 +92,7 @@ function retomar_juego()
 function mostrar_palabra()
 {
    my_socket.sockets.emit( "palabra", diccionario[ indicediccionario ] );  
+   puntos_disponibles = 10;
 }
 /*------------------------------------------------------------------------------- */
 function setear_tiempo()
@@ -106,7 +107,7 @@ function setear_tiempo()
         if ( indicediccionario > diccionario.length ){ indicediccionario = 0; }
         mostrar_palabra( diccionario[ indicediccionario ] );
         }
-      ,20000);
+      ,60000);
   }
     
 /*------------------------------------------------------------------------------- */
@@ -138,7 +139,7 @@ function detener_timer()
 /*------------------------------------------------------------------------------- */
 function cargar_diccionario()
 { 
-  diccionario = [ "a", "triangulo", "pera", "manzana", "banana", "casa", "auto", "computadora", "mesa", "silla", "guante"
+  diccionario = [ "agua", "triangulo", "pera", "manzana", "banana", "casa", "auto", "computadora", "mesa", "silla", "guante"
                 , "pelota", "heladera", "monitor", "lapicera", "anteojos", "reloj", "azucar", "teclado", "empresa"];
 }
 /*------------------------------------------------------------------------------- */
