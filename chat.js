@@ -10,7 +10,7 @@ var reloj_canvas;
 $(document).on("ready", iniciar);
  
 function iniciar()
-{  
+{   
 	if( !Modernizr.canvas )
 	{
 		$("#contenedor_pizarra").style.display = "none";
@@ -30,10 +30,11 @@ function iniciar()
 		websocket.on("detener_tiempo_reloj",detener_tiempo_reloj);
 		websocket.on("ultimos_segundos", ultimos_segundos);
 		websocket.on("bloquear_usuario_ganador", bloquear_usuario_ganador);
+		websocket.on("sumar_control", estoy_vivo);
 		
 		$("#formulario").on("submit",enviarMensaje);
 		
-		if($("#turno_usuario").text() != user )
+		if($("#turno_usuario").text() !=  sessionStorage.user_name )
 		{	
 			websocket.on("pizarra_actualizada", recibir_canvas);
 		 }
@@ -61,12 +62,12 @@ function mostrarusuarios(users_server)
 {
 	$("#lusuarios tr").remove();
 	listausuarios= $("#lusuarios");
-	listausuarios.append("<tr><td>Usuarios</td><td>Puntos</td></tr>");
+	listausuarios.append("<tr><td>Usuarios</td><td>Paauntos</td><</tr>");
 
 	for (var i = users_server.length - 1; i >= 0; i--) {
 			if (users_server[i]["0"] == $("#turno_usuario").text())
 		{
-			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
+			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></td> </tr>");
 		}
 		else {
 			listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
@@ -74,7 +75,7 @@ function mostrarusuarios(users_server)
 	};
 
 	var objpalabra = $("#palabra");
-	if( user == $("#turno_usuario").text() )
+	if( sessionStorage.user_name == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
 	}
@@ -87,7 +88,9 @@ function mostrarusuarios(users_server)
 
 function cargarusuario(e) 
 {
+	
 	user = $("#user_name").val();
+	sessionStorage.user_name = user;
 	$("#user_name_label").text(user + ":");
 	e.preventDefault();
 	websocket.emit("nuevoUsuario", user);
@@ -114,7 +117,7 @@ function cargarusuario(e)
 function enviarMensaje(e)
 {
 	var user_text = $("#user_text").val();
-	var user_name_and_text = { "0" : user, "1" : user_text };
+	var user_name_and_text = { "0" : sessionStorage.user_name, "1" : user_text };
 	e.preventDefault();
 	websocket.emit("nuevoTexto", user_name_and_text );
 	$("#user_text").val("");
@@ -141,7 +144,7 @@ function mostrarpalabra(palabra)
   var objpalabra = $("#palabra");
   objpalabra.text(palabra);
   
-	if( user == $("#turno_usuario").text() )
+	if( sessionStorage.user_name == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
 	}
@@ -402,4 +405,9 @@ function bloquear_usuario_ganador( usuario_bloqueado )
 	{
 		$("#formulario input").attr("disabled","disabled");	
 	}
+}
+
+function estoy_vivo (  )
+{
+	websocket.emit("estoy_vivo", sessionStorage.user_name);
 }
