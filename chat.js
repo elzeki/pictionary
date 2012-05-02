@@ -3,6 +3,7 @@ var user;
 var color_linea_chat = true; //alterna de true a false para saber de que color pinta la linea
 var pizarra_canvas;
 var pizarra_context;
+var trazo_linea = "5";
 var color_pincel;
 var timerreloj;
 var reloj_canvas;
@@ -36,7 +37,7 @@ function iniciar()
 		if($("#turno_usuario").text() != user )
 		{	
 			websocket.on("pizarra_actualizada", recibir_canvas);
-		 }
+		}
 		else
 		{	
 			websocket.on("pizarra", enviar_canvas);
@@ -55,6 +56,8 @@ function iniciar()
 
 		$(".botonera").mousedown(function(){ setColor( $(this).css("background-color"));});
 	}
+
+	cambiarTrazo("5");
 }
 
 function mostrarusuarios(users_server)
@@ -68,7 +71,8 @@ function mostrarusuarios(users_server)
 		{
 			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
 		}
-		else {
+		else 
+		{
 			listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
 		}
 	};
@@ -77,11 +81,17 @@ function mostrarusuarios(users_server)
 	if( user == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
+		$("#colorsDiv").show();
+		$("#borrar_bt").show();
+		$("#div_trazo").show();
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
 		//objpalabra.text("no te importa!");
+		$("#colorsDiv").hide();
+		$("#borrar_bt").hide();
+		$("#div_trazo").hide();
 	}
 }
 
@@ -103,11 +113,17 @@ function cargarusuario(e)
 	if( user == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
+		$("#colorsDiv").show();
+		$("#borrar_bt").show();
+		$("#div_trazo").show();
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
 		//objpalabra.text("no te importa!");
+		$("#colorsDiv").hide();
+		$("#borrar_bt").hide();
+		$("#div_trazo").hide();
 	}
 }
 
@@ -140,16 +156,23 @@ function mostrarpalabra(palabra)
 {
   var objpalabra = $("#palabra");
   objpalabra.text(palabra);
-  
 	if( user == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
+		$("#colorsDiv").show();
+		$("#borrar_bt").show();
+		$("#div_trazo").show();
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
+		//objpalabra.text("no te importa!");
+		$("#colorsDiv").hide();
+		$("#borrar_bt").hide();
+		$("#div_trazo").hide();
 		objpalabra.text("no te importa!");
 	}
+	
 }
 
 //funciones de la pizarra ***************************************************************************
@@ -162,6 +185,7 @@ function empezarPintar(e){
 	if($("#turno_usuario").text() == user )
 	{
 		se_modifico_pizarra = true;
+		pizarra_context.lineWidth = trazo_linea;
 		pizarra_context.beginPath();
 		pizarra_context.strokeStyle = color_pincel;
 		pizarra_context.moveTo(e.clientX-pizarra_canvas.offsetLeft, e.clientY-pizarra_canvas.offsetTop);
@@ -207,15 +231,25 @@ function setearturnousuario(usuario, users_server)
 {   
 	var objpalabra = $("#palabra");
    $("#turno_usuario").text(usuario);
-
 	if( user == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
+		$("#colorsDiv").show();
+		$("#borrar_bt").show();
+		$("#div_trazo").show();
+		$("#formulario input").attr("disabled","disabled");
+		$("#div_trazo").removeAttr("disabled");
+		$("#rango_trazo").val("5");
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
+		$("#colorsDiv").hide();
+		$("#borrar_bt").hide();
+		$("#div_trazo").hide();
 		//objpalabra.text("no te importa!");
+		$("#formulario input").removeAttr("disabled");
+		$("#div_trazo").attr("disabled","disabled");
 	}
    $("#lusuarios tr").remove();
 	listausuarios= $("#lusuarios");
@@ -233,16 +267,10 @@ function setearturnousuario(usuario, users_server)
 		}
 	};
 	borrar();
-
-	if( $("#turno_usuario").text() == user)
-	{
-		$("#formulario input").attr("disabled","disabled");
-	}
-	else
-	{
-		$("#formulario input").removeAttr("disabled");
-	}
 }
+
+
+//seccion de enviar y recibir lo que se dibuja en el canvas ***************************************
 
 function enviar_canvas()
 {
@@ -278,21 +306,44 @@ function loadCanvas(dataURL){
 	imageObj.src = dataURL;
 }
 
+//*************************************************************************************************
+
 
 function comenzar(turno_usuario){
 
 	if( user == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
+		$("#colorsDiv").show();
+		$("#borrar_bt").show();
+		$("#div_trazo").show();
+		$("#div_trazo").removeAttr("disabled");
+		$("#rango_trazo").val("5");
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
+		$("#colorsDiv").hide();
+		$("#borrar_bt").hide();
+		$("#div_trazo").hide();
 		objpalabra.text("no te importa!");
+		$("#formulario input").removeAttr("disabled");
+		$("#div_trazo").attr("disabled","disabled");
 	}
 
-	if( user != $("#turno_usuario").text() ){ $("#formulario input").removeAttr("disabled"); }
+	var canvas_trazo_context = document.getElementById("canvas_trazo");
+	var canvas_trazo = canvas_trazo_context.getContext("2d");
+	canvas_trazo_context.width = canvas_trazo_context.width;
+	canvas_trazo.beginPath();
+	canvas_trazo.strokeStyle = color_pincel;
+	canvas_trazo.fillStyle = color_pincel;
+	canvas_trazo.arc(25, 25, 5, 0, Math.PI*2, true);
+	canvas_trazo.stroke();
+	canvas_trazo.fill();
 }
+
+
+//implementacion del reloj ************************************************************************
 
 function detener_tiempo_reloj()
 {
@@ -334,9 +385,9 @@ function seteartiemporestante(reloj_canvas,i)
 {	
 
 	auxi=i;
-	if (i<10) {i="0"+i;	}
-	if (i>=58)  { auxi=i+4; }
-	if (i ==33)  
+	if (i < 10) {i = "0" + i;	}
+	if (i >= 58)  { auxi = i + 4; }
+	if (i == 45)  
 		{ 
 			color="rgb(255,0,0)"; 
 			circulo2y3(lienzo,color);
@@ -396,10 +447,29 @@ function ultimos_segundos( segundos )
    seteartiemporeloj( segundos, true );
 }
 
+
+//*************************************************************************************************
+
 function bloquear_usuario_ganador( usuario_bloqueado )
 {
 	if(usuario_bloqueado == user )
 	{
 		$("#formulario input").attr("disabled","disabled");	
 	}
+}
+
+function cambiarTrazo(nuevo_valor)
+{
+	trazo_linea = nuevo_valor;
+	pizarra_context.lineWidth = trazo_linea;
+
+	var canvas_trazo_context = document.getElementById("canvas_trazo");
+	var canvas_trazo = canvas_trazo_context.getContext("2d");
+	canvas_trazo_context.width = canvas_trazo_context.width;
+	canvas_trazo.beginPath();
+	canvas_trazo.strokeStyle = color_pincel;
+	canvas_trazo.fillStyle = color_pincel;
+	canvas_trazo.arc(25, 25, nuevo_valor, 0, Math.PI*2, true);
+	canvas_trazo.stroke();
+	canvas_trazo.fill();
 }

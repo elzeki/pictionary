@@ -27,6 +27,10 @@
 	float:left;
 }
 
+#color_clear{
+	float: left;
+}
+
 .main_container .colors_container div {
 	width:20px;
 	height:20px;
@@ -45,4 +49,32 @@
 #reloj1 {
   float:right;
   background-color: red;
+}
+
+#contenedor_pizarra
+{
+	float:left;
+	width: 615px;
+}
+
+#canvas_trazo { 
+	border:1px solid;
+	border-color:#EEEEEE;
+	float:left;
+	background-color:#fff;
+	margin-left: 12px;
+	border-radius: 2em;
+}
+
+#rango_trazo
+{
+	vertical-align: middle;
+	float:left;
+}
+
+#div_trazo
+{
+	float:left;
+	width:210px;
+	height:60px;
 }
