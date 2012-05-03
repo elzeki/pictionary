@@ -3,7 +3,6 @@ var user;
 var color_linea_chat = true; //alterna de true a false para saber de que color pinta la linea
 var pizarra_canvas;
 var pizarra_context;
-var trazo_linea = "5";
 var color_pincel;
 var timerreloj;
 var reloj_canvas;
@@ -11,7 +10,7 @@ var reloj_canvas;
 $(document).on("ready", iniciar);
  
 function iniciar()
-{  
+{   
 	if( !Modernizr.canvas )
 	{
 		$("#contenedor_pizarra").style.display = "none";
@@ -31,13 +30,14 @@ function iniciar()
 		websocket.on("detener_tiempo_reloj",detener_tiempo_reloj);
 		websocket.on("ultimos_segundos", ultimos_segundos);
 		websocket.on("bloquear_usuario_ganador", bloquear_usuario_ganador);
-		
+		websocket.on("sumar_control", estoy_vivo);
+
 		$("#formulario").on("submit",enviarMensaje);
-		
-		if($("#turno_usuario").text() != user )
+
+		if($("#turno_usuario").text() !=  sessionStorage.user_name )
 		{	
 			websocket.on("pizarra_actualizada", recibir_canvas);
-		}
+		 }
 		else
 		{	
 			websocket.on("pizarra", enviar_canvas);
@@ -56,48 +56,41 @@ function iniciar()
 
 		$(".botonera").mousedown(function(){ setColor( $(this).css("background-color"));});
 	}
-
-	cambiarTrazo("5");
 }
 
 function mostrarusuarios(users_server)
 {
 	$("#lusuarios tr").remove();
 	listausuarios= $("#lusuarios");
-	listausuarios.append("<tr><td>Usuarios</td><td>Puntos</td></tr>");
+	listausuarios.append("<tr><td>Usuarios</td><td>Paauntos</td><</tr>");
 
 	for (var i = users_server.length - 1; i >= 0; i--) {
 			if (users_server[i]["0"] == $("#turno_usuario").text())
 		{
-			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
+			listausuarios.append("<tr style='font-weight: bold; background:yellow;'><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></td> </tr>");
 		}
-		else 
-		{
+		else {
 			listausuarios.append("<tr><td>" + users_server[i]["0"] +"</td><td>" + users_server[i]["1"]+ "</td></tr>");
 		}
 	};
 
 	var objpalabra = $("#palabra");
-	if( user == $("#turno_usuario").text() )
+	if( sessionStorage.user_name == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
-		$("#colorsDiv").show();
-		$("#borrar_bt").show();
-		$("#div_trazo").show();
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
 		//objpalabra.text("no te importa!");
-		$("#colorsDiv").hide();
-		$("#borrar_bt").hide();
-		$("#div_trazo").hide();
 	}
 }
 
 function cargarusuario(e) 
 {
+
 	user = $("#user_name").val();
+	sessionStorage.user_name = user;
 	$("#user_name_label").text(user + ":");
 	e.preventDefault();
 	websocket.emit("nuevoUsuario", user);
@@ -113,28 +106,22 @@ function cargarusuario(e)
 	if( user == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
-		$("#colorsDiv").show();
-		$("#borrar_bt").show();
-		$("#div_trazo").show();
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
 		//objpalabra.text("no te importa!");
-		$("#colorsDiv").hide();
-		$("#borrar_bt").hide();
-		$("#div_trazo").hide();
 	}
 }
 
 function enviarMensaje(e)
 {
 	var user_text = $("#user_text").val();
-	var user_name_and_text = { "0" : user, "1" : user_text };
+	var user_name_and_text = { "0" : sessionStorage.user_name, "1" : user_text };
 	e.preventDefault();
 	websocket.emit("nuevoTexto", user_name_and_text );
 	$("#user_text").val("");
-	
+
 }
 function recibirMensaje(datosServidor)
 {
@@ -156,23 +143,16 @@ function mostrarpalabra(palabra)
 {
   var objpalabra = $("#palabra");
   objpalabra.text(palabra);
-	if( user == $("#turno_usuario").text() )
+  
+	if( sessionStorage.user_name == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
-		$("#colorsDiv").show();
-		$("#borrar_bt").show();
-		$("#div_trazo").show();
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
-		//objpalabra.text("no te importa!");
-		$("#colorsDiv").hide();
-		$("#borrar_bt").hide();
-		$("#div_trazo").hide();
 		objpalabra.text("no te importa!");
 	}
-	
 }
 
 //funciones de la pizarra ***************************************************************************
@@ -185,7 +165,6 @@ function empezarPintar(e){
 	if($("#turno_usuario").text() == user )
 	{
 		se_modifico_pizarra = true;
-		pizarra_context.lineWidth = trazo_linea;
 		pizarra_context.beginPath();
 		pizarra_context.strokeStyle = color_pincel;
 		pizarra_context.moveTo(e.clientX-pizarra_canvas.offsetLeft, e.clientY-pizarra_canvas.offsetTop);
@@ -194,17 +173,17 @@ function empezarPintar(e){
 }
 
 /*
-	terminarPintar(e) se ejecuta al soltar el bot贸n izquierdo, y elimina el listener para 
+	terminarPintar(e) se ejecuta al soltar el bot髇 izquierdo, y elimina el listener para 
 	mousemove
 */
 
 function terminarPintar(e){
 	pizarra_canvas.removeEventListener("mousemove",pintar,false);
 }
-	
+
 /*
-	pintar(e) se ejecuta cada vez que movemos el rat贸n con el bot贸n izquierdo pulsado.
-	Con cada movimiento dibujamos una nueva linea hasta la posici贸n actual del rat贸n en pantalla.
+	pintar(e) se ejecuta cada vez que movemos el rat髇 con el bot髇 izquierdo pulsado.
+	Con cada movimiento dibujamos una nueva linea hasta la posici髇 actual del rat髇 en pantalla.
 */
 
 function pintar(e) {
@@ -214,7 +193,7 @@ function pintar(e) {
 		pizarra_context.stroke();
 	}
 }
-	
+
 /*
 	borrar() vuelve a setear el ancho del canvas, lo que produce que se borren los trazos dibujados
 	hasta ese momento.
@@ -231,25 +210,15 @@ function setearturnousuario(usuario, users_server)
 {   
 	var objpalabra = $("#palabra");
    $("#turno_usuario").text(usuario);
+
 	if( user == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
-		$("#colorsDiv").show();
-		$("#borrar_bt").show();
-		$("#div_trazo").show();
-		$("#formulario input").attr("disabled","disabled");
-		$("#div_trazo").removeAttr("disabled");
-		$("#rango_trazo").val("5");
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
-		$("#colorsDiv").hide();
-		$("#borrar_bt").hide();
-		$("#div_trazo").hide();
 		//objpalabra.text("no te importa!");
-		$("#formulario input").removeAttr("disabled");
-		$("#div_trazo").attr("disabled","disabled");
 	}
    $("#lusuarios tr").remove();
 	listausuarios= $("#lusuarios");
@@ -267,10 +236,16 @@ function setearturnousuario(usuario, users_server)
 		}
 	};
 	borrar();
+
+	if( $("#turno_usuario").text() == user)
+	{
+		$("#formulario input").attr("disabled","disabled");
+	}
+	else
+	{
+		$("#formulario input").removeAttr("disabled");
+	}
 }
-
-
-//seccion de enviar y recibir lo que se dibuja en el canvas ***************************************
 
 function enviar_canvas()
 {
@@ -306,44 +281,21 @@ function loadCanvas(dataURL){
 	imageObj.src = dataURL;
 }
 
-//*************************************************************************************************
-
 
 function comenzar(turno_usuario){
 
 	if( user == $("#turno_usuario").text() )
 	{	
 		objpalabra.css({visibility: 'visible'});
-		$("#colorsDiv").show();
-		$("#borrar_bt").show();
-		$("#div_trazo").show();
-		$("#div_trazo").removeAttr("disabled");
-		$("#rango_trazo").val("5");
 	}
 	else
 	{	
 		objpalabra.css({visibility: 'hidden'});
-		$("#colorsDiv").hide();
-		$("#borrar_bt").hide();
-		$("#div_trazo").hide();
 		objpalabra.text("no te importa!");
-		$("#formulario input").removeAttr("disabled");
-		$("#div_trazo").attr("disabled","disabled");
 	}
 
-	var canvas_trazo_context = document.getElementById("canvas_trazo");
-	var canvas_trazo = canvas_trazo_context.getContext("2d");
-	canvas_trazo_context.width = canvas_trazo_context.width;
-	canvas_trazo.beginPath();
-	canvas_trazo.strokeStyle = color_pincel;
-	canvas_trazo.fillStyle = color_pincel;
-	canvas_trazo.arc(25, 25, 5, 0, Math.PI*2, true);
-	canvas_trazo.stroke();
-	canvas_trazo.fill();
+	if( user != $("#turno_usuario").text() ){ $("#formulario input").removeAttr("disabled"); }
 }
-
-
-//implementacion del reloj ************************************************************************
 
 function detener_tiempo_reloj()
 {
@@ -385,9 +337,9 @@ function seteartiemporestante(reloj_canvas,i)
 {	
 
 	auxi=i;
-	if (i < 10) {i = "0" + i;	}
-	if (i >= 58)  { auxi = i + 4; }
-	if (i == 45)  
+	if (i<10) {i="0"+i;	}
+	if (i>=58)  { auxi=i+4; }
+	if (i ==33)  
 		{ 
 			color="rgb(255,0,0)"; 
 			circulo2y3(lienzo,color);
@@ -405,7 +357,7 @@ function seteartiemporestante(reloj_canvas,i)
 	lienzo.lineWidth = 10;    
 	lienzo.arc(54,54,45,-Math.PI/2  ,-Math.PI/2 + (auxi/10)  ,false);
 	lienzo.stroke()
-	 
+
 	/* numeros*/ 	
 	lienzo.fillStyle=color;
 	lienzo.font="bold 59px Arial";
@@ -420,8 +372,8 @@ function dibujar_reloj(lienzo, color)
 	lienzo.lineWidth = 5;    
 	lienzo.arc(54,54,45,0  ,Math.PI *2  ,false);
 	lienzo.stroke();
-	
-	
+
+
    circulo2y3(lienzo,color);
 }
 
@@ -447,9 +399,6 @@ function ultimos_segundos( segundos )
    seteartiemporeloj( segundos, true );
 }
 
-
-//*************************************************************************************************
-
 function bloquear_usuario_ganador( usuario_bloqueado )
 {
 	if(usuario_bloqueado == user )
@@ -458,18 +407,7 @@ function bloquear_usuario_ganador( usuario_bloqueado )
 	}
 }
 
-function cambiarTrazo(nuevo_valor)
+function estoy_vivo (  )
 {
-	trazo_linea = nuevo_valor;
-	pizarra_context.lineWidth = trazo_linea;
-
-	var canvas_trazo_context = document.getElementById("canvas_trazo");
-	var canvas_trazo = canvas_trazo_context.getContext("2d");
-	canvas_trazo_context.width = canvas_trazo_context.width;
-	canvas_trazo.beginPath();
-	canvas_trazo.strokeStyle = color_pincel;
-	canvas_trazo.fillStyle = color_pincel;
-	canvas_trazo.arc(25, 25, nuevo_valor, 0, Math.PI*2, true);
-	canvas_trazo.stroke();
-	canvas_trazo.fill();
+	websocket.emit("estoy_vivo", sessionStorage.user_name);
 }
