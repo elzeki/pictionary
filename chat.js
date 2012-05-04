@@ -179,6 +179,7 @@ function mostrarpalabra(palabra)
 
 function setColor(buttonColor){
 	color_pincel = buttonColor;
+	cambiarTrazo(trazo_linea);
 }
 
 function empezarPintar(e){
