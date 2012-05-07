@@ -354,33 +354,20 @@ function seteartiemporeloj(i, ultimos_segundos)
 	lienzo = reloj_canvas.getContext("2d");
 	reloj_canvas.width=reloj_canvas.width;
 	color="rgb(51,255,102)";
-	dibujar_reloj(lienzo,color);
+	//dibujar_reloj(lienzo,color);
 	clearInterval(timerreloj);
-	if (ultimos_segundos) // cuenta regresiva de 10 a 0 
-	{  
-	  timerreloj=setInterval( 
-	  function() {    
-		--i;
-		if (i>= 0)
-		 {seteartiemporestante(lienzo,i);}
-		}
-	  ,1000);  		
-	}
-	else   // cuenta de 0 a 60
-	{
+	
 		timerreloj=setInterval( 
 		  function() {    
-			++i;
+			--i;
 			 seteartiemporestante(lienzo,i);
 			}
 		  ,1000);
-	}
 }
 
 
 function seteartiemporestante(reloj_canvas,i)
 {	
-
 	auxi=i;
 	if (i < 10) {i = "0" + i;	}
 	if (i >= 58)  { auxi = i + 4; }
@@ -393,14 +380,14 @@ function seteartiemporestante(reloj_canvas,i)
 	/* circulo 1 el negro*/
 	lienzo.beginPath();
 	lienzo.fillStyle="rgb(0,0,0)";
-	lienzo.arc(54,54,37,0,Math.PI*2,true);
+	lienzo.arc(54,54,42,0,Math.PI*2,true);
 	lienzo.fill();
 
 	/* circulo dinamico*/
 	lienzo.beginPath();
 	lienzo.strokeStyle=color;
 	lienzo.lineWidth = 10;    
-	lienzo.arc(54,54,45,-Math.PI/2  ,-Math.PI/2 + (auxi/10)  ,false);
+	lienzo.arc(54,54,45,Math.PI*2  ,false);
 	lienzo.stroke()
 	 
 	/* numeros*/ 	
@@ -417,28 +404,8 @@ function dibujar_reloj(lienzo, color)
 	lienzo.lineWidth = 5;    
 	lienzo.arc(54,54,45,0  ,Math.PI *2  ,false);
 	lienzo.stroke();
-	
-	
-   circulo2y3(lienzo,color);
 }
 
-function circulo2y3 (lienzo,color)
-{
-	/* circulo 3*/
-	lienzo.beginPath();
-	lienzo.strokeStyle=color;
-	lienzo.lineWidth = 4;  
-	lienzo.arc(54,54,50,0,Math.PI*2 ,true);
-	lienzo.stroke();
-
-	 /* circulo 2*/
-	lienzo.beginPath();
-	lienzo.lineWidth = 4;  
-	lienzo.strokeStyle=color;
-	lienzo.arc(54,54,40,0,Math.PI*2 ,true);
-	lienzo.stroke();
-
-}
 function ultimos_segundos( segundos )
 {
    seteartiemporeloj( segundos, true );
